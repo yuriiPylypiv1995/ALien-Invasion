@@ -1,13 +1,14 @@
 import sys
 import pygame
+from settings import Settings
 
 class AlianInvasion:
     """Клас, що ініціалізує гру"""
     def __init__(self):
         """Ініціалізація гри"""
         pygame.init()
-        self.bg_color = (230, 230, 230)
-        self.screen = pygame.display.set_mode((1200, 800))
+        self.settings = Settings()
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
 
         pygame.display.set_caption("Alian Invasion")
 
@@ -20,7 +21,7 @@ class AlianInvasion:
                     sys.exit()
 
             # Перемалювати екран на кожній ітерації циклу
-            self.screen.fill(self.bg_color)
+            self.screen.fill(self.settings.bg_color)
 
             # Показати останній намальований екран
             pygame.display.flip()
