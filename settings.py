@@ -1,7 +1,7 @@
 class Settings:
-    """Клас для збереження всіх налаштувань гри"""
+    """This is a class for saving all of game's settings"""
     def __init__(self):
-        """Ініціалізація налаштувань гри"""
+        """Game settings initialization"""
         # Screen settings
         self.screen_width = 1200
         self.screen_height = 800

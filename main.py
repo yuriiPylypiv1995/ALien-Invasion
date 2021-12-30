@@ -2,10 +2,10 @@ import sys
 import pygame
 from settings import Settings
 
-class AlianInvasion:
-    """Клас, що ініціалізує гру"""
+class AlienInvasion:
+    """Class for game initialization"""
     def __init__(self):
-        """Ініціалізація гри"""
+        """Game initialization"""
         pygame.init()
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
@@ -13,20 +13,20 @@ class AlianInvasion:
         pygame.display.set_caption("Alian Invasion")
 
     def run_game(self):
-        """Головний цикл гри"""
+        """The main cycle of the game"""
         while True:
-            # Слідкувати за подіями миші і клавіатури
+            # The events monitoring
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit()
 
-            # Перемалювати екран на кожній ітерації циклу
+            # Repainting the screen after each cycle iteration
             self.screen.fill(self.settings.bg_color)
 
-            # Показати останній намальований екран
+            # Show the last painted screen
             pygame.display.flip()
 
 if __name__ == "__main__":
-    # Створити екземпляр класу гри і запустити гру
-    ai = AlianInvasion()
+    # Creating the game object and run the game
+    ai = AlienInvasion()
     ai.run_game()
