@@ -1,6 +1,7 @@
 import sys
 import pygame
 from settings import Settings
+from ship import Ship
 
 class AlienInvasion:
     """Class for game initialization"""
@@ -12,6 +13,8 @@ class AlienInvasion:
 
         pygame.display.set_caption("Alian Invasion")
 
+        self.ship = Ship(self)
+
     def run_game(self):
         """The main cycle of the game"""
         while True:
@@ -22,6 +25,7 @@ class AlienInvasion:
 
             # Repainting the screen after each cycle iteration
             self.screen.fill(self.settings.bg_color)
+            self.ship.blitme()
 
             # Show the last painted screen
             pygame.display.flip()
