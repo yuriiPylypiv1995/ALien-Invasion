@@ -6,6 +6,7 @@ class Ship:
         """The spaceship initialization and start position"""
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
+        self.settings = ai_game.settings
 
         # Getting an image of the spaceship
         self.image = pygame.image.load('images/ship.bmp')
@@ -13,6 +14,22 @@ class Ship:
 
         # Setting of the spaceship start position (on the botton centre of the screen)
         self.rect.midbottom = self.screen_rect.midbottom
+
+        self.x = float(self.rect.x)
+
+        # The moving right indicator
+        self.moving_right = False
+        # The moving left indicator
+        self.moving_left = False
+
+    def update_position(self):
+        if self.moving_right:
+            self.x += self.settings.ship_speed
+        if self.moving_left:
+            self.x -= self.settings.ship_speed
+
+        # Updating rect x
+        self.rect.x = self.x
 
     def blitme(self):
         """Paiting of the spaceship on its start position"""

@@ -21,14 +21,27 @@ class AlienInvasion:
         """The main cycle of the game"""
         while True:
             self._check_events()
+            self.ship.update_position()
             self._update_screen()
 
-    @staticmethod
-    def _check_events():
+    def _check_events(self):
         # The events monitoring
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 sys.exit()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    # Replace the spaceship on 1 pix right
+                    self.ship.moving_right = True
+                elif event.key == pygame.K_LEFT:
+                    # Replace the spaceship on 1 pix left
+                    self.ship.moving_left = True
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT:
+                    # Do not move the spaceship
+                    self.ship.moving_right = False
+                elif event.key == pygame.K_LEFT:
+                    self.ship.moving_left = False
 
     def _update_screen(self):
         # Repainting the screen after each cycle iteration
