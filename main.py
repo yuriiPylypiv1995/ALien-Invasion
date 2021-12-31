@@ -30,18 +30,28 @@ class AlienInvasion:
             if event.type == pygame.QUIT:
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RIGHT:
-                    # Replace the spaceship on 1 pix right
-                    self.ship.moving_right = True
-                elif event.key == pygame.K_LEFT:
-                    # Replace the spaceship on 1 pix left
-                    self.ship.moving_left = True
+                self._check_keydown_events(event)
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_RIGHT:
-                    # Do not move the spaceship
-                    self.ship.moving_right = False
-                elif event.key == pygame.K_LEFT:
-                    self.ship.moving_left = False
+                self._check_keyup_events(event)
+
+    def _check_keydown_events(self, event):
+        """Reaction on pressing buttons"""
+        if event.key == pygame.K_RIGHT:
+            # Replace the spaceship on 1 pix right
+            self.ship.moving_right = True
+        elif event.key == pygame.K_LEFT:
+            # Replace the spaceship on 1 pix left
+            self.ship.moving_left = True
+        elif event.key == pygame.K_q:
+            sys.exit()
+
+    def _check_keyup_events(self, event):
+        """Reaction wnen a button is not pressed"""
+        if event.key == pygame.K_RIGHT:
+            # Do not move the spaceship
+            self.ship.moving_right = False
+        elif event.key == pygame.K_LEFT:
+            self.ship.moving_left = False
 
     def _update_screen(self):
         # Repainting the screen after each cycle iteration
