@@ -62,6 +62,7 @@ class AlienInvasion:
         elif event.key == pygame.K_ESCAPE:
             # Exit from the fullscreen mode
             self.screen = pygame.display.set_mode((1200, 670))
+            self.ship.x -= 168
             self.ship.rect.y -= 100
             self.ship.screen_rect.right -= 168
 
