@@ -11,9 +11,7 @@ class AlienInvasion:
         """Game initialization"""
         pygame.init()
         self.settings = Settings()
-        self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.settings.screen_width = self.screen.get_rect().width
-        self.settings.screen_height = self.screen.get_rect().height
+        self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
 
         pygame.display.set_caption("Alien Invasion")
 
@@ -54,6 +52,18 @@ class AlienInvasion:
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
+        elif event.key == pygame.K_F12:
+            # Open the game in the fullscreen mode
+            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+            self.settings.screen_width = self.screen.get_rect().width
+            self.settings.screen_height = self.screen.get_rect().height
+            self.ship.rect.y += 100
+            self.ship.screen_rect.right += 168
+        elif event.key == pygame.K_ESCAPE:
+            # Exit from the fullscreen mode
+            self.screen = pygame.display.set_mode((1200, 670))
+            self.ship.rect.y -= 100
+            self.ship.screen_rect.right -= 168
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
