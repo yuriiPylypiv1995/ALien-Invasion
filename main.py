@@ -24,10 +24,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update_position()
-            self.bullets.update()
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
+            self._update_bullets()
             self._update_screen()
 
     def _check_events(self):
@@ -62,7 +59,10 @@ class AlienInvasion:
         elif event.key == pygame.K_ESCAPE:
             # Exit from the fullscreen mode
             self.screen = pygame.display.set_mode((1200, 670))
-            self.ship.x -= 168
+            if self.ship.x < 0:
+                self.ship.x = 0
+            elif self.ship.x > 1200:
+                self.ship.x -= 168
             self.ship.rect.y -= 100
             self.ship.screen_rect.right -= 168
 
@@ -87,8 +87,18 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         # Adding new bullet to group
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullets_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        """The method for bullets updating"""
+        # Bullets positions updating
+        self.bullets.update()
+        # Removing bullets that out of the screen
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
 
 if __name__ == "__main__":
     # Creating the game object and run the game
