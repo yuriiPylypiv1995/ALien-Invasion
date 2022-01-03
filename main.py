@@ -2,6 +2,7 @@ import sys
 import pygame
 from settings import Settings
 from ship import Ship
+from bullet import Bullet
 # from character import Character
 
 class AlienInvasion:
@@ -17,6 +18,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
 
         self.ship = Ship(self)
+        self.bullets = pygame.sprite.Group()
         # self.character = Character(self)
 
     def run_game(self):
@@ -24,6 +26,7 @@ class AlienInvasion:
         while True:
             self._check_events()
             self.ship.update_position()
+            self.bullets.update()
             self._update_screen()
 
     def _check_events(self):
@@ -46,6 +49,8 @@ class AlienInvasion:
             self.ship.moving_left = True
         elif event.key == pygame.K_q:
             sys.exit()
+        elif event.key == pygame.K_SPACE:
+            self._fire_bullet()
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
@@ -59,10 +64,17 @@ class AlienInvasion:
         # Repainting the screen after each cycle iteration
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
+        for bullet in self.bullets.sprites():
+            bullet.draw_bullet()
         # self.character.blit_zombie()
 
         # Show the last painted screen
         pygame.display.flip()
+
+    def _fire_bullet(self):
+        # Adding new bullet to group
+        new_bullet = Bullet(self)
+        self.bullets.add(new_bullet)
 
 if __name__ == "__main__":
     # Creating the game object and run the game
