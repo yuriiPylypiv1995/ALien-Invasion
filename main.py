@@ -3,6 +3,7 @@ import pygame
 from settings import Settings
 from ship import Ship
 from bullet import Bullet
+from alien import Alien
 # from character import Character
 
 class AlienInvasion:
@@ -17,7 +18,10 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
+        self.aliens = pygame.sprite.Group()
         # self.character = Character(self)
+
+        self._create_fleet()
 
     def run_game(self):
         """The main cycle of the game"""
@@ -56,6 +60,7 @@ class AlienInvasion:
             self.settings.screen_height = self.screen.get_rect().height
             self.ship.rect.y += 100
             self.ship.screen_rect.right += 168
+            self._create_fleet()
         elif event.key == pygame.K_ESCAPE:
             # Exit from the fullscreen mode
             self.screen = pygame.display.set_mode((1200, 670))
@@ -65,6 +70,7 @@ class AlienInvasion:
                 self.ship.x -= 168
             self.ship.rect.y -= 100
             self.ship.screen_rect.right -= 168
+            self._create_fleet()
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
@@ -74,12 +80,41 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
+    def _create_fleet(self):
+        """Create a fleet of aliens"""
+        # Available space of screen on x equil screen width - two alien widthes
+        # Available aliens number equil available space of screen on x / two alien widthes
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        available_space_x = self.settings.screen_width - (2 * alien_width)
+        number_aliens_x = available_space_x // (2 * alien_width)
+        # Available space of screen on y equil screen height - three alien heights - spaceship height
+        # Available range aliens number equil available space of screen on y / two alien heights
+        ship_height = self.ship.rect.height
+        available_space_y = self.settings.screen_height - (3 * alien_height) - ship_height
+        number_rows = available_space_y // (2 * alien_height)
+
+        # Create an alien and add it to range
+        # Create ranges
+        for row_number in range(number_rows):
+            for alien_number in range(number_aliens_x):
+                self._create_alien(alien_number, row_number)
+
+    def _create_alien(self, alien_number, row_number):
+        alien = Alien(self)
+        alien_width, alien_height = alien.rect.size
+        alien_x = alien_width + 2 * alien_width * alien_number
+        alien.rect.x = alien_x
+        alien.rect.y = alien_height + 2 * alien_height * row_number
+        self.aliens.add(alien)
+
     def _update_screen(self):
         # Repainting the screen after each cycle iteration
         self.screen.fill(self.settings.bg_color)
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+        self.aliens.draw(self.screen)
         # self.character.blit_zombie()
 
         # Show the last painted screen
