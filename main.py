@@ -29,6 +29,7 @@ class AlienInvasion:
             self._check_events()
             self.ship.update_position()
             self._update_bullets()
+            self._update_aliens()
             self._update_screen()
 
     def _check_events(self):
@@ -108,6 +109,19 @@ class AlienInvasion:
         alien.rect.y = alien_height + 2 * alien_height * row_number
         self.aliens.add(alien)
 
+    def _check_fleet_edges(self):
+        """Check if any of aliens reached the edge of screen"""
+        for alien in self.aliens.sprites():
+            if alien.check_edges():
+                self._change_fleet_direction()
+                break
+
+    def _change_fleet_direction(self):
+        """Move the fleet down and change its direction"""
+        for alien in self.aliens.sprites():
+            alien.rect.y += self.settings.fleet_drop_speed
+        self.settings.fleet_direction *= -1
+
     def _update_screen(self):
         # Repainting the screen after each cycle iteration
         self.screen.fill(self.settings.bg_color)
@@ -134,6 +148,11 @@ class AlienInvasion:
         for bullet in self.bullets.copy():
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
+
+    def _update_aliens(self):
+        """Check the fleet is on the screen edge and update fleet position"""
+        self._check_fleet_edges()
+        self.aliens.update()
 
 if __name__ == "__main__":
     # Creating the game object and run the game
