@@ -1,0 +1,15 @@
+class GameStats:
+    """This is the class for game's statistic"""
+
+    def __init__(self, ai_game):
+        """The statistic initialization"""
+
+        # Start the game with active status
+        self.game_active = True
+
+        self.settings = ai_game.settings
+        self.reset_stats()
+
+    def reset_stats(self):
+        """The statistic initialization that may change during the game"""
+        self.ships_left = self.settings.ship_limit
