@@ -5,7 +5,8 @@ class GameStats:
         """The statistic initialization"""
 
         # Start the game with active status
-        self.game_active = True
+        self.ships_left = None
+        self.game_active = False
 
         self.settings = ai_game.settings
         self.reset_stats()
