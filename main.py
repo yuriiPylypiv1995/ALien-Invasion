@@ -58,21 +58,7 @@ class AlienInvasion:
     def _check_play_button(self, mouse_pos):
         """Start the new game when user press the'Play' button"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-        if button_clicked and not self.stats.game_active:
-            # Update the game stats
-            self.stats.reset_stats()
-            self.stats.game_active = True
-
-            # Clear the aliens fleet and bullets
-            self.aliens.empty()
-            self.bullets.empty()
-
-            # Create a new fleet and put the ship to the screen center
-            self._create_fleet()
-            self.ship.center_ship()
-
-            # Hide the mouse cursor
-            pygame.mouse.set_visible(False)
+        self._start_game(button_clicked)
 
     def _check_keydown_events(self, event):
         """Reaction on pressing buttons"""
@@ -104,6 +90,8 @@ class AlienInvasion:
             self.ship.rect.y -= 100
             self.ship.screen_rect.right -= 168
             self._create_fleet()
+        elif event.key == pygame.K_p:
+            self._start_game()
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
@@ -112,6 +100,23 @@ class AlienInvasion:
             self.ship.moving_right = False
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
+
+    def _start_game(self, button_clicked=''):
+        if button_clicked or not self.stats.game_active:
+            # Update the game stats
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Clear the aliens fleet and bullets
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Create a new fleet and put the ship to the screen center
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # Hide the mouse cursor
+            pygame.mouse.set_visible(False)
 
     def _create_fleet(self):
         """Create a fleet of aliens"""
