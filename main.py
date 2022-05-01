@@ -152,10 +152,10 @@ class AlienInvasion:
             self.settings.speed_up_scale += 0
             print("You have choose an easy game level")
         elif button_normal_clicked:
-            self.settings.speed_up_scale += 0.2
+            self.settings.speed_up_scale += 0.1
             print("You have choose a normal game level")
         elif button_hard_clicked:
-            self.settings.speed_up_scale += 0.3
+            self.settings.speed_up_scale += 0.2
             print("You have choose a hard game level. Be careful!")
 
     def _create_fleet(self):
