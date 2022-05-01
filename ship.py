@@ -2,6 +2,7 @@ import pygame
 
 class Ship:
     """The spaceship params and working"""
+
     def __init__(self, ai_game):
         """The spaceship initialization and start position"""
         self.screen = ai_game.screen

@@ -1,5 +1,6 @@
 class Settings:
     """This is a class for saving all of game's settings"""
+
     def __init__(self):
         """Game settings initialization"""
         # Screen settings

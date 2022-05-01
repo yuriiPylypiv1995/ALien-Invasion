@@ -11,6 +11,7 @@ from button import Button
 
 class AlienInvasion:
     """Class for game initialization"""
+
     def __init__(self):
         """Game initialization"""
         pygame.init()

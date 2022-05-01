@@ -3,7 +3,6 @@ class GameStats:
 
     def __init__(self, ai_game):
         """The statistic initialization"""
-
         # Start the game with active status
         self.ships_left = None
         self.game_active = False
