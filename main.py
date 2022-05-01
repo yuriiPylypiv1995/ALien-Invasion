@@ -103,6 +103,9 @@ class AlienInvasion:
 
     def _start_game(self, button_clicked=''):
         if button_clicked or not self.stats.game_active:
+            # Set up the dynamic settings
+            self.settings.ititialize_dynamic_settings()
+
             # Update the game stats
             self.stats.reset_stats()
             self.stats.game_active = True
@@ -200,6 +203,7 @@ class AlienInvasion:
             # Delete remaining bullets and create a new fleet
             self.aliens.empty()
             self._create_fleet()
+            self.settings.increase_speed()
 
     def _update_aliens(self):
         """Check the fleet is on the screen edge and update fleet position"""
