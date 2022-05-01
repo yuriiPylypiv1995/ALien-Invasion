@@ -3,22 +3,24 @@ import pygame.font
 class Button:
     """This is a class for game's buttons initialization"""
 
-    def __init__(self, ai_game, msg):
+    def __init__(self, ai_game, msg: str, width: int, height: int, button_color: tuple, text_color: tuple,
+                 font_size: int, x: int, y: int):
         """The attributes of buttons initialization"""
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
 
         # The size and properties of the button
-        self.width, self.height = 200, 50
-        self.button_color = (0, 255, 0)
-        self.text_color = (255, 255, 255)
-        self.font = pygame.font.SysFont(None, 48)
+        self.width, self.height = width, height
+        self.button_color = button_color
+        self.text_color = text_color
+        self.font = pygame.font.SysFont(None, font_size)
 
-        # Rect object of the button and it's centering
+        # Rect object of the button and it's position
         self.rect = pygame.Rect(0, 0, self.width, self.height)
-        self.rect.center = self.screen_rect.center
+        self.rect.x = x
+        self.rect.y = y
 
-        # This method shows text on the button "Play" one tine only
+        # This method shows text on the buttons
         self._prep_msg(msg)
 
     def _prep_msg(self, msg):

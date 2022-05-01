@@ -8,7 +8,6 @@ from bullet import Bullet
 from alien import Alien
 from game_stats import GameStats
 from button import Button
-# from character import Character
 
 class AlienInvasion:
     """Class for game initialization"""
@@ -24,12 +23,14 @@ class AlienInvasion:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
-        # self.character = Character(self)
 
         self._create_fleet()
 
-        # The "Play" button creating
-        self.play_button = Button(self, "Play")
+        # The buttons creating
+        self.play_button = Button(self, "Play", 200, 50, (0, 0, 0), (255, 255, 255), 48, 530, 290)
+        self.easy_level_button = Button(self, "Easy", 100, 40, (0, 255, 0), (255, 255, 255), 24, 430, 370)
+        self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 370)
+        self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 370)
 
     def run_game(self):
         """The main cycle of the game"""
@@ -54,11 +55,12 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
+                self._check_level_choice_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start the new game when user press the'Play' button"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
-        self._start_game(button_clicked)
+        self._start_game_with_play_button(button_clicked)
 
     def _check_keydown_events(self, event):
         """Reaction on pressing buttons"""
@@ -91,7 +93,7 @@ class AlienInvasion:
             self.ship.screen_rect.right -= 168
             self._create_fleet()
         elif event.key == pygame.K_p:
-            self._start_game()
+            self._start_game_with_p_button()
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
@@ -101,8 +103,8 @@ class AlienInvasion:
         elif event.key == pygame.K_LEFT:
             self.ship.moving_left = False
 
-    def _start_game(self, button_clicked=''):
-        if button_clicked or not self.stats.game_active:
+    def _start_game_with_play_button(self, button_clicked):
+        if button_clicked and not self.stats.game_active:
             # Set up the dynamic settings
             self.settings.ititialize_dynamic_settings()
 
@@ -120,6 +122,41 @@ class AlienInvasion:
 
             # Hide the mouse cursor
             pygame.mouse.set_visible(False)
+
+    def _start_game_with_p_button(self):
+        if not self.stats.game_active:
+            # Set up the dynamic settings
+            self.settings.ititialize_dynamic_settings()
+
+            # Update the game stats
+            self.stats.reset_stats()
+            self.stats.game_active = True
+
+            # Clear the aliens fleet and bullets
+            self.aliens.empty()
+            self.bullets.empty()
+
+            # Create a new fleet and put the ship to the screen center
+            self._create_fleet()
+            self.ship.center_ship()
+
+            # Hide the mouse cursor
+            pygame.mouse.set_visible(False)
+
+    def _check_level_choice_button(self, mouse_pos):
+        """This is the method for choosing the game level by a user"""
+        button_easy_clicked = self.easy_level_button.rect.collidepoint(mouse_pos)
+        button_normal_clicked = self.normal_level_button.rect.collidepoint(mouse_pos)
+        button_hard_clicked = self.hard_level_button.rect.collidepoint(mouse_pos)
+        if button_easy_clicked:
+            self.settings.speed_up_scale += 0
+            print("You have choose an easy game level")
+        elif button_normal_clicked:
+            self.settings.speed_up_scale += 0.2
+            print("You have choose a normal game level")
+        elif button_hard_clicked:
+            self.settings.speed_up_scale += 0.3
+            print("You have choose a hard game level. Be careful!")
 
     def _create_fleet(self):
         """Create a fleet of aliens"""
@@ -174,6 +211,9 @@ class AlienInvasion:
         # Drawing the play button if the game is not active
         if not self.stats.game_active:
             self.play_button.draw_button()
+            self.easy_level_button.draw_button()
+            self.normal_level_button.draw_button()
+            self.hard_level_button.draw_button()
 
         # Show the last painted screen
         pygame.display.flip()
