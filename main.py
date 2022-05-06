@@ -114,6 +114,8 @@ class AlienInvasion:
             self.stats.reset_stats()
             self.stats.game_active = True
             self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
 
             # Clear the aliens fleet and bullets
             self.aliens.empty()
@@ -134,6 +136,9 @@ class AlienInvasion:
             # Update the game stats
             self.stats.reset_stats()
             self.stats.game_active = True
+            self.sb.prep_score()
+            self.sb.prep_level()
+            self.sb.prep_ships()
 
             # Clear the aliens fleet and bullets
             self.aliens.empty()
@@ -186,7 +191,7 @@ class AlienInvasion:
         alien_width, alien_height = alien.rect.size
         alien_x = alien_width + 2 * alien_width * alien_number
         alien.rect.x = alien_x
-        alien.rect.y = alien_height + 2 * alien_height * row_number
+        alien.rect.y = (alien_height + 2 * alien_height * row_number) + 50
         self.aliens.add(alien)
 
     def _check_fleet_edges(self):
@@ -248,12 +253,17 @@ class AlienInvasion:
             for alien in collisions.values():
                 self.stats.score += self.settings.alien_points * len(alien)
             self.sb.prep_score()
+            self.sb.check_high_score()
 
         if not self.aliens:
             # Delete remaining bullets and create a new fleet
             self.aliens.empty()
             self._create_fleet()
             self.settings.increase_speed()
+
+            # Increase the level
+            self.stats.level += 1
+            self.sb.prep_level()
 
     def _update_aliens(self):
         """Check the fleet is on the screen edge and update fleet position"""
@@ -270,8 +280,9 @@ class AlienInvasion:
     def _ship_hit(self):
         """This method regulates what we do when aliens hit the ship"""
         if self.stats.ships_left > 0:
-            # Refuse ship_left from statistic
+            # Refuse ship_left from statistic and update the scoreboard
             self.stats.ships_left -= 1
+            self.sb.prep_ships()
 
             # Delete the remaining aliens and bullets
             self.aliens.empty()
