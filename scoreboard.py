@@ -44,7 +44,7 @@ class Scoreboard:
 
     def prep_high_score(self):
         """Reform the digital score to an image"""
-        high_score = round(self.stats.high_score, -1)
+        high_score = int(self.read_high_score())
         high_score_str = "High score: {:,}".format(high_score)
         self.high_score_image = self.font.render(high_score_str, True, self.text_color, self.settings.bg_color)
 
@@ -79,8 +79,23 @@ class Scoreboard:
         self.screen.blit(self.level_image, self.level_rect)
         self.ships.draw(self.screen)
 
+    def save_high_score(self):
+        """Saving the highest score to a file in order to show it when game will be reopened"""
+        high_score_filename = "high_score.txt"
+        high_score = str(self.stats.high_score)
+        with open(high_score_filename, 'w') as file_object:
+            file_object.write(high_score)
+
+    @staticmethod
+    def read_high_score():
+        """Reading the high score from the file"""
+        with open('high_score.txt', 'r') as file_object:
+            high_score_saved = file_object.read()
+            return high_score_saved
+
     def check_high_score(self):
         """Check if the new high score is reached"""
-        if self.stats.score > self.stats.high_score:
+        if self.stats.score > int(self.read_high_score()):
             self.stats.high_score = self.stats.score
+            self.save_high_score()
             self.prep_high_score()

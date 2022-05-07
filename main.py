@@ -18,15 +18,15 @@ class AlienInvasion:
         pygame.init()
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
+        self.stats = GameStats(self)
+        self.sb = Scoreboard(self)
 
         pygame.display.set_caption("Alien Invasion")
 
-        self.stats = GameStats(self)
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self._create_fleet()
-        self.sb = Scoreboard(self)
 
         # The buttons creating
         self.play_button = Button(self, "Play", 200, 50, (0, 0, 0), (255, 255, 255), 48, 530, 290)
@@ -218,12 +218,13 @@ class AlienInvasion:
         # Draw the score image in the screen
         self.sb.show_score()
 
-        # Drawing the play button if the game is not active
+        # Drawing the play and other button if the game is not active
         if not self.stats.game_active:
             self.play_button.draw_button()
             self.easy_level_button.draw_button()
             self.normal_level_button.draw_button()
             self.hard_level_button.draw_button()
+            self.sb.read_high_score()
 
         # Show the last painted screen
         pygame.display.flip()
