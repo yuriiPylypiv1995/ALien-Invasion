@@ -33,6 +33,8 @@ class AlienInvasion:
         self.easy_level_button = Button(self, "Easy", 100, 40, (0, 255, 0), (255, 255, 255), 24, 430, 370)
         self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 370)
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 370)
+        self.reset_high_score_button = Button(self, "Reset", 70, 20, (96, 96, 96), (255, 255, 255), 20,
+                                              (self.sb.high_score_rect.right + 10), 25)
 
     def run_game(self):
         """The main cycle of the game"""
@@ -58,11 +60,22 @@ class AlienInvasion:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
                 self._check_level_choice_button(mouse_pos)
+                self._check_reset_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start the new game when user press the'Play' button"""
         button_clicked = self.play_button.rect.collidepoint(mouse_pos)
         self._start_game_with_play_button(button_clicked)
+
+    def _check_reset_button(self, mouse_pos):
+        """Reset the high score to zero if user clicked the 'reset' button"""
+        button_clicked = self.reset_high_score_button.rect.collidepoint(mouse_pos)
+        if button_clicked and int(self.sb.read_high_score()) > 0:
+            with open('high_score.txt', 'w') as file_object:
+                file_object.write(str(self.stats.high_score))
+            self.sb.prep_high_score()
+            self.reset_high_score_button.rect.x = self.sb.high_score_rect.right + 10
+            self.reset_high_score_button.prep_msg("Done")
 
     def _check_keydown_events(self, event):
         """Reaction on pressing buttons"""
@@ -224,6 +237,7 @@ class AlienInvasion:
             self.easy_level_button.draw_button()
             self.normal_level_button.draw_button()
             self.hard_level_button.draw_button()
+            self.reset_high_score_button.draw_button()
             self.sb.read_high_score()
 
         # Show the last painted screen

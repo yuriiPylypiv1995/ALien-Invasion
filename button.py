@@ -6,6 +6,8 @@ class Button:
     def __init__(self, ai_game, msg: str, width: int, height: int, button_color: tuple, text_color: tuple,
                  font_size: int, x: int, y: int):
         """The attributes of buttons initialization"""
+        self.msg_image_rect = None
+        self.msg_image = None
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
 
@@ -21,9 +23,9 @@ class Button:
         self.rect.y = y
 
         # This method shows text on the buttons
-        self._prep_msg(msg)
+        self.prep_msg(msg)
 
-    def _prep_msg(self, msg):
+    def prep_msg(self, msg):
         """Reform the text to image and position him to center of the button"""
         self.msg_image = self.font.render(msg, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()

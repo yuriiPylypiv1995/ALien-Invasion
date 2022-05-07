@@ -5,6 +5,7 @@ from ship import Ship
 
 class Scoreboard:
     """"This class regulates the game score"""
+
     def __init__(self, ai_game):
         """The score's attributes"""
         self.ai_game = ai_game
@@ -45,7 +46,7 @@ class Scoreboard:
     def prep_high_score(self):
         """Reform the digital score to an image"""
         high_score = int(self.read_high_score())
-        high_score_str = "High score: {:,}".format(high_score)
+        high_score_str = "Highest score: {:,}".format(high_score)
         self.high_score_image = self.font.render(high_score_str, True, self.text_color, self.settings.bg_color)
 
         # Horizontal center the high score
