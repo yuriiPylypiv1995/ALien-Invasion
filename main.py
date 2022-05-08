@@ -1,6 +1,7 @@
 import sys
 import pygame
 from time import sleep
+import pygame.font
 
 from settings import Settings
 from ship import Ship
@@ -26,6 +27,10 @@ class AlienInvasion:
         self.ship = Ship(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
+        self.font = pygame.font.SysFont(None, self.settings.font_size)
+        self.font_message = None
+        self.message_image = self.font.render(self.font_message, True, self.settings.font_color, self.settings.bg_color)
+        self.message_image_rect = self.message_image.get_rect()
         self._create_fleet()
 
         # The buttons creating
@@ -59,7 +64,7 @@ class AlienInvasion:
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_pos = pygame.mouse.get_pos()
                 self._check_play_button(mouse_pos)
-                self._check_level_choice_button(mouse_pos)
+                self.check_level_choice_button(mouse_pos)
                 self._check_reset_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
@@ -126,9 +131,7 @@ class AlienInvasion:
             # Update the game stats
             self.stats.reset_stats()
             self.stats.game_active = True
-            self.sb.prep_score()
-            self.sb.prep_level()
-            self.sb.prep_ships()
+            self.sb.prep_images()
 
             # Clear the aliens fleet and bullets
             self.aliens.empty()
@@ -149,9 +152,7 @@ class AlienInvasion:
             # Update the game stats
             self.stats.reset_stats()
             self.stats.game_active = True
-            self.sb.prep_score()
-            self.sb.prep_level()
-            self.sb.prep_ships()
+            self.sb.prep_images()
 
             # Clear the aliens fleet and bullets
             self.aliens.empty()
@@ -164,20 +165,32 @@ class AlienInvasion:
             # Hide the mouse cursor
             pygame.mouse.set_visible(False)
 
-    def _check_level_choice_button(self, mouse_pos):
+    def check_level_choice_button(self, mouse_pos):
         """This is the method for choosing the game level by a user"""
         button_easy_clicked = self.easy_level_button.rect.collidepoint(mouse_pos)
         button_normal_clicked = self.normal_level_button.rect.collidepoint(mouse_pos)
         button_hard_clicked = self.hard_level_button.rect.collidepoint(mouse_pos)
         if button_easy_clicked:
             self.settings.speed_up_scale += 0
-            print("You have choose an easy game level")
+            self.prep_level_buttons_messages("You have choose an easy game level")
         elif button_normal_clicked:
-            self.settings.speed_up_scale += 0.1
-            print("You have choose a normal game level")
+            self.settings.speed_up_scale += 0.01
+            self.prep_level_buttons_messages("You have choose a normal game level")
         elif button_hard_clicked:
-            self.settings.speed_up_scale += 0.2
-            print("You have choose a hard game level. Be careful!")
+            self.settings.speed_up_scale += 0.02
+            self.prep_level_buttons_messages("You have choose a hard game level. Be careful!")
+
+    def prep_level_buttons_messages(self, message: str):
+        """This method prepares the messages images for level buttons clicked"""
+        self.message_image = self.font.render(message, True, self.settings.font_color, self.settings.bg_color)
+        self.message_image_rect = self.message_image.get_rect()
+        self.message_image_rect.center = self.play_button.rect.center
+        self.message_image_rect.y = 450
+        self.blit_level_buttons_messages(self.message_image, self.message_image_rect)
+
+    def blit_level_buttons_messages(self, message_image, message_image_rect):
+        """This method blits the messages images for level buttons clicked"""
+        self.screen.blit(message_image, message_image_rect)
 
     def _create_fleet(self):
         """Create a fleet of aliens"""
@@ -240,6 +253,9 @@ class AlienInvasion:
             self.reset_high_score_button.draw_button()
             self.sb.read_high_score()
 
+            # Painting the level buttons clicked massages images
+            self.blit_level_buttons_messages(self.message_image, self.message_image_rect)
+
         # Show the last painted screen
         pygame.display.flip()
 
@@ -276,9 +292,13 @@ class AlienInvasion:
             self._create_fleet()
             self.settings.increase_speed()
 
-            # Increase the level
-            self.stats.level += 1
-            self.sb.prep_level()
+            # Icrease the game level
+            self._start_new_level()
+
+    def _start_new_level(self):
+        """Increase the level when bullet alien collisions"""
+        self.stats.level += 1
+        self.sb.prep_level()
 
     def _update_aliens(self):
         """Check the fleet is on the screen edge and update fleet position"""

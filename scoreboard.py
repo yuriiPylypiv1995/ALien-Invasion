@@ -27,10 +27,7 @@ class Scoreboard:
         self.ships = None
 
         # Making an image for start score's showing
-        self.prep_score()
-        self.prep_high_score()
-        self.prep_level()
-        self.prep_ships()
+        self.prep_images()
 
     def prep_score(self):
         """Reform the digital score to an image"""
@@ -100,3 +97,10 @@ class Scoreboard:
             self.stats.high_score = self.stats.score
             self.save_high_score()
             self.prep_high_score()
+
+    def prep_images(self):
+        """This method shows all of score's images on the game screen"""
+        self.prep_score()
+        self.prep_high_score()
+        self.prep_level()
+        self.prep_ships()
