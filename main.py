@@ -35,7 +35,7 @@ class AlienInvasion:
         self._create_fleet()
 
         # The buttons creating
-        self.play_button = Button(self, "Play", 200, 50, (0, 0, 0), (255, 255, 255), 48, 530, 290)
+        self.play_button = Button(self, "Play", 200, 50, (205, 92, 92), (255, 255, 255), 48, 530, 290)
         self.easy_level_button = Button(self, "Easy", 100, 40, (0, 255, 0), (255, 255, 255), 24, 430, 370)
         self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 370)
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 370)
@@ -90,9 +90,7 @@ class AlienInvasion:
         button_clicked = self.ok_button.rect.collidepoint(mouse_pos)
         if button_clicked and self.stats.game_active is not True:
             self.message_image.fill(self.settings.bg_color)
-            self.ok_button.msg_image.fill(self.settings.bg_color)
-            self.ok_button.button_color = self.settings.bg_color
-            self.ok_button.text_color = self.settings.bg_color
+            self.ok_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 600, 475)
 
     def _check_keydown_events(self, event):
         """Reaction on pressing buttons"""
@@ -186,17 +184,17 @@ class AlienInvasion:
             self.settings.speed_up_scale += 0
             self.prep_level_buttons_messages("You have choose an easy game level")
             self.ok_button_show = True
-            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
+            self.ok_button = Button(self, "Ok", 70, 20, (119, 136, 153), (255, 255, 255), 20, 600, 475)
         elif button_normal_clicked:
             self.settings.speed_up_scale += 0.01
             self.prep_level_buttons_messages("You have choose a normal game level")
             self.ok_button_show = True
-            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
+            self.ok_button = Button(self, "Ok", 70, 20, (119, 136, 153), (255, 255, 255), 20, 600, 475)
         elif button_hard_clicked:
             self.settings.speed_up_scale += 0.02
             self.prep_level_buttons_messages("You have choose a hard game level. Be careful!")
             self.ok_button_show = True
-            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
+            self.ok_button = Button(self, "Ok", 70, 20, (119, 136, 153), (255, 255, 255), 20, 600, 475)
 
     def prep_level_buttons_messages(self, message: str):
         """This method prepares the messages images for level buttons clicked"""
