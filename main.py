@@ -31,6 +31,7 @@ class AlienInvasion:
         self.font_message = None
         self.message_image = self.font.render(self.font_message, True, self.settings.font_color, self.settings.bg_color)
         self.message_image_rect = self.message_image.get_rect()
+        self.ok_button_show = None
         self._create_fleet()
 
         # The buttons creating
@@ -40,6 +41,7 @@ class AlienInvasion:
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 370)
         self.reset_high_score_button = Button(self, "Reset", 70, 20, (96, 96, 96), (255, 255, 255), 20,
                                               (self.sb.high_score_rect.right + 10), 25)
+        self.ok_button = None
 
     def run_game(self):
         """The main cycle of the game"""
@@ -66,6 +68,7 @@ class AlienInvasion:
                 self._check_play_button(mouse_pos)
                 self.check_level_choice_button(mouse_pos)
                 self._check_reset_button(mouse_pos)
+                self._check_ok_button(mouse_pos)
 
     def _check_play_button(self, mouse_pos):
         """Start the new game when user press the'Play' button"""
@@ -81,6 +84,15 @@ class AlienInvasion:
             self.sb.prep_high_score()
             self.reset_high_score_button.rect.x = self.sb.high_score_rect.right + 10
             self.reset_high_score_button.prep_msg("Done")
+
+    def _check_ok_button(self, mouse_pos):
+        """Hide the level buttons messages"""
+        button_clicked = self.ok_button.rect.collidepoint(mouse_pos)
+        if button_clicked and self.stats.game_active is not True:
+            self.message_image.fill(self.settings.bg_color)
+            self.ok_button.msg_image.fill(self.settings.bg_color)
+            self.ok_button.button_color = self.settings.bg_color
+            self.ok_button.text_color = self.settings.bg_color
 
     def _check_keydown_events(self, event):
         """Reaction on pressing buttons"""
@@ -173,12 +185,18 @@ class AlienInvasion:
         if button_easy_clicked:
             self.settings.speed_up_scale += 0
             self.prep_level_buttons_messages("You have choose an easy game level")
+            self.ok_button_show = True
+            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
         elif button_normal_clicked:
             self.settings.speed_up_scale += 0.01
             self.prep_level_buttons_messages("You have choose a normal game level")
+            self.ok_button_show = True
+            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
         elif button_hard_clicked:
             self.settings.speed_up_scale += 0.02
             self.prep_level_buttons_messages("You have choose a hard game level. Be careful!")
+            self.ok_button_show = True
+            self.ok_button = Button(self, "Ok", 70, 20, (96, 96, 96), (255, 255, 255), 20, 600, 475)
 
     def prep_level_buttons_messages(self, message: str):
         """This method prepares the messages images for level buttons clicked"""
@@ -255,6 +273,8 @@ class AlienInvasion:
 
             # Painting the level buttons clicked massages images
             self.blit_level_buttons_messages(self.message_image, self.message_image_rect)
+            if self.ok_button_show:
+                self.ok_button.draw_button()
 
         # Show the last painted screen
         pygame.display.flip()
