@@ -381,7 +381,7 @@ class AlienInvasion:
         else:
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
-            self.reset_high_score_button.rect.x = self.sb.high_score_rect.right + 10
+            self.sb.prep_high_score()
             self.aliens.empty()
             self.bullets.empty()
             self._create_fleet()
