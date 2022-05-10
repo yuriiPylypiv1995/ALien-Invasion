@@ -10,6 +10,7 @@ from alien import Alien
 from game_stats import GameStats
 from button import Button
 from scoreboard import Scoreboard
+from shield import Shield
 
 class AlienInvasion:
     """Class for game initialization"""
@@ -25,6 +26,7 @@ class AlienInvasion:
         pygame.display.set_caption("Alien Invasion")
 
         self.ship = Ship(self)
+        self.shield = Shield(self)
         self.bullets = pygame.sprite.Group()
         self.aliens = pygame.sprite.Group()
         self.font = pygame.font.SysFont(None, self.settings.font_size)
@@ -50,6 +52,7 @@ class AlienInvasion:
             self._check_events()
             if self.stats.game_active:
                 self.ship.update_position()
+                self.shield.move_shield()
                 self._update_bullets()
                 self._update_aliens()
 
@@ -105,6 +108,7 @@ class AlienInvasion:
                 # Icrease the game level
                 self._start_new_level()
                 self.start_new_level_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 0, 0)
+                self.shield.show_shield = True
         except AttributeError:
             pass
 
@@ -142,6 +146,10 @@ class AlienInvasion:
             self._start_game_with_p_button()
         elif event.key == pygame.K_n:
             self._start_next_level_with_n_button()
+        elif event.key == pygame.K_s:
+            self.shield.show_shield = True
+        elif event.key == pygame.K_a:
+            self.shield.show_shield = False
 
     def _check_keyup_events(self, event):
         """Reaction wnen a button is not pressed"""
@@ -197,6 +205,7 @@ class AlienInvasion:
         """This method respons for starting a next game level"""
         self._start_new_level()
         self.start_new_level_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 0, 0)
+        self.shield.show_shield = True
 
     def check_level_choice_button(self, mouse_pos):
         """This is the method for choosing the game level by a user"""
@@ -298,6 +307,8 @@ class AlienInvasion:
                 self.ok_button.draw_button()
         if self.new_level_up:
             self.start_new_level_button.draw_button()
+        if self.shield.show_shield:
+            self.shield.draw_shield()
 
         # Show the last painted screen
         pygame.display.flip()
@@ -333,6 +344,7 @@ class AlienInvasion:
             self.aliens.empty()
             self.bullets.empty()
             self.new_level_up = True
+            self.shield.show_shield = False
             self.start_new_level_button = Button(self, 'Next level', 170, 50, (255, 153, 51), (255, 255, 255), 48, 530,
                                                  335)
             pygame.mouse.set_visible(True)

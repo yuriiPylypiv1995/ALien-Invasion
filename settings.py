@@ -21,6 +21,11 @@ class Settings:
         self.bullets_allowed = 3
         self.bullet_speed = None
 
+        # Shield settings
+        self.shield_width = 160
+        self.shield_height = 10
+        self.shield_color = (153, 0, 153)
+
         # Aliens settings
         self.fleet_direction = None
         self.alien_speed = None
