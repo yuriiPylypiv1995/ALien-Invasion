@@ -1,3 +1,4 @@
+import random
 import sys
 import pygame
 from time import sleep
@@ -108,7 +109,6 @@ class AlienInvasion:
                 # Icrease the game level
                 self._start_new_level()
                 self.start_new_level_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 0, 0)
-                self.shield.show_shield = True
         except AttributeError:
             pass
 
@@ -205,7 +205,6 @@ class AlienInvasion:
         """This method respons for starting a next game level"""
         self._start_new_level()
         self.start_new_level_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 0, 0)
-        self.shield.show_shield = True
 
     def check_level_choice_button(self, mouse_pos):
         """This is the method for choosing the game level by a user"""
@@ -262,11 +261,18 @@ class AlienInvasion:
 
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
+        randon_number = random.randint(-35, 10)
         alien_width, alien_height = alien.rect.size
-        alien_x = alien_width + 2 * alien_width * alien_number
-        alien.rect.x = alien_x
-        alien.rect.y = (alien_height + 2 * alien_height * row_number) + 50
-        self.aliens.add(alien)
+        if self.stats.game_active and self.stats.level >= 4:
+            alien_x = (alien_width + 2 * alien_width * alien_number) + randon_number
+            alien.rect.x = alien_x
+            alien.rect.y = ((alien_height + 2 * alien_height * row_number) + 50) + randon_number
+            self.aliens.add(alien)
+        else:
+            alien_x = alien_width + 2 * alien_width * alien_number
+            alien.rect.x = alien_x
+            alien.rect.y = (alien_height + 2 * alien_height * row_number) + 50
+            self.aliens.add(alien)
 
     def _check_fleet_edges(self):
         """Check if any of aliens reached the edge of screen"""
@@ -307,7 +313,7 @@ class AlienInvasion:
                 self.ok_button.draw_button()
         if self.new_level_up:
             self.start_new_level_button.draw_button()
-        if self.shield.show_shield:
+        if self.shield.show_shield and self.stats.game_active:
             self.shield.blit_power_shield()
 
         # Show the last painted screen
