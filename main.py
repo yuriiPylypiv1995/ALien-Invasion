@@ -52,7 +52,7 @@ class AlienInvasion:
             self._check_events()
             if self.stats.game_active:
                 self.ship.update_position()
-                self.shield.move_shield()
+                self.shield.move_power_shield()
                 self._update_bullets()
                 self._update_aliens()
 
@@ -308,7 +308,7 @@ class AlienInvasion:
         if self.new_level_up:
             self.start_new_level_button.draw_button()
         if self.shield.show_shield:
-            self.shield.draw_shield()
+            self.shield.blit_power_shield()
 
         # Show the last painted screen
         pygame.display.flip()

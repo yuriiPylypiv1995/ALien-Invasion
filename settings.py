@@ -24,6 +24,8 @@ class Settings:
         # Shield settings
         self.shield_width = 160
         self.shield_height = 10
+        self.power_shield_width = 470
+        self.power_shield_height = 295
         self.shield_color = (153, 0, 153)
 
         # Aliens settings
