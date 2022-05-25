@@ -356,6 +356,13 @@ class AlienInvasion:
             pygame.mouse.set_visible(True)
             self.ship.center_ship()
 
+    def _check_power_shield_alians_collisions(self):
+        """Removing those aliens that touched the ship power shield"""
+        for alien in self.aliens.sprites():
+            if pygame.sprite.spritecollideany(self.shield, self.aliens) and self.shield.show_shield and alien.rect.y \
+                    >= self.shield.rect.y and alien.rect.x >= self.shield.rect.x:
+                alien.kill()
+
     def _start_new_level(self):
         """Increase the level when bullet alien collisions"""
         # Delete remaining bullets and create a new fleet
@@ -372,12 +379,15 @@ class AlienInvasion:
         self._check_fleet_edges()
         self.aliens.update()
 
-        # Check if any allien touched the ship
+        # Check if any alien touched the ship
         if pygame.sprite.spritecollideany(self.ship, self.aliens):
             self._ship_hit()
 
         # Check if the aliens from the group reached the bottom of the screen
         self._check_aliens_bottom()
+
+        # Removing an alien if it touched the ship's power shield
+        self._check_power_shield_alians_collisions()
 
     def _ship_hit(self):
         """This method regulates what we do when aliens hit the ship"""
