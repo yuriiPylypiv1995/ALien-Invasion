@@ -44,7 +44,7 @@ class AlienInvasion:
         self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 490)
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 490)
         self.reset_high_score_button = Button(self, "Reset", 70, 20, (96, 96, 96), (255, 255, 255), 20,
-                                              (self.sb.high_score_rect.right + 10), 25)
+                                              (self.sb.high_score_rect.right + 10), self.sb.high_score_rect.y - 1)
         self.ok_button = None
 
     def run_game(self):
@@ -304,7 +304,8 @@ class AlienInvasion:
             self.easy_level_button.draw_button()
             self.normal_level_button.draw_button()
             self.hard_level_button.draw_button()
-            self.reset_high_score_button.draw_button()
+            if int(self.sb.read_high_score()) != 0:
+                self.reset_high_score_button.draw_button()
             self.sb.read_high_score()
 
             # Painting the level buttons clicked massages images
@@ -313,7 +314,8 @@ class AlienInvasion:
                 self.ok_button.draw_button()
         if self.new_level_up:
             self.start_new_level_button.draw_button()
-        if self.shield.show_shield and self.stats.game_active:
+        if self.shield.show_shield and self.stats.game_active and self.stats.shield_left >= 0 and \
+                self.stats.shield_life_remain > 0:
             self.shield.blit_power_shield()
 
         # Show the last painted screen
@@ -357,11 +359,27 @@ class AlienInvasion:
             self.ship.center_ship()
 
     def _check_power_shield_alians_collisions(self):
-        """Removing those aliens that touched the ship power shield"""
+        """Removing those aliens that touched the ship power shield and minus shield life points"""
         for alien in self.aliens.sprites():
             if pygame.sprite.spritecollideany(self.shield, self.aliens) and self.shield.show_shield and alien.rect.y \
-                    >= self.shield.rect.y and alien.rect.x >= self.shield.rect.x:
+                    >= self.shield.rect.y and alien.rect.x >= self.shield.rect.x and self.stats.shield_left >= 0 and \
+                    self.stats.shield_life_remain > 0:
                 alien.kill()
+                self.stats.shield_life_remain -= 1
+                self.sb.prep_shield_life_remain()
+
+        # Minus the shield user remaining score if it's life points = 0
+        if self.stats.shield_life_remain < 1:
+            self.stats.shield_life_remain = self.settings.shield_life_poitns // 2
+            self.sb.prep_shield_life_remain()
+            self.stats.shield_left -= 1
+            self.sb.prep_shields()
+
+        if self.stats.shield_left <= -1:
+            self.stats.shield_life_remain = 0
+            self.sb.prep_shield_life_remain()
+            self.stats.shield_left = 0
+            self.sb.prep_shields()
 
     def _start_new_level(self):
         """Increase the level when bullet alien collisions"""

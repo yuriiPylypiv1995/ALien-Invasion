@@ -9,6 +9,8 @@ class GameStats:
         self.level = None
         self.game_active = False
         self.high_score = 0
+        self.shield_left = None
+        self.shield_life_remain = 0
 
         self.settings = ai_game.settings
         self.reset_stats()
@@ -18,3 +20,5 @@ class GameStats:
         self.ships_left = self.settings.ship_limit
         self.score = 0
         self.level = 1
+        self.shield_left = self.settings.shield_limit
+        self.shield_life_remain = self.settings.shield_life_poitns

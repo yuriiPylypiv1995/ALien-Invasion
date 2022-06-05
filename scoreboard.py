@@ -16,7 +16,7 @@ class Scoreboard:
 
         # There are a font's settings
         self.text_color = (30, 30, 30)
-        self.font = pygame.font.SysFont(None, 48)
+        self.font = pygame.font.SysFont(None, 30)
 
         self.score_image = None
         self.high_score_image = None
@@ -25,6 +25,10 @@ class Scoreboard:
         self.high_score_rect = None
         self.level_rect = None
         self.ships = None
+        self.shield_life_remain_image = None
+        self.shield_life_remain_image_rect = None
+        self.shields_remain_image = None
+        self.shields_remain_image_rect = None
 
         # Making an image for start score's showing
         self.prep_images()
@@ -61,6 +65,28 @@ class Scoreboard:
         self.level_rect.right = self.score_rect.right
         self.level_rect.top = self.score_rect.bottom + 10
 
+    def prep_shield_life_remain(self):
+        """Reform the shield life remain points to an image"""
+        shield_life_remain_str = str("Shield's life points: " + str(self.stats.shield_life_remain))
+        self.shield_life_remain_image = self.font.render(shield_life_remain_str, True, self.text_color,
+                                                         self.settings.bg_color)
+
+        # Horizontal center the shield life points
+        self.shield_life_remain_image_rect = self.shield_life_remain_image.get_rect()
+        self.shield_life_remain_image_rect.centerx = self.screen_rect.centerx
+        self.shield_life_remain_image_rect.y = self.high_score_rect.y + 25
+
+    def prep_shields(self):
+        """Reform the remaining shields amount to an image"""
+        shields_remain_str = str("Shields: " + str(self.stats.shield_left))
+        self.shields_remain_image = self.font.render(shields_remain_str, True, self.text_color,
+                                                         self.settings.bg_color)
+
+        # Locate the remaining shields amount to right corner of the game screen
+        self.shields_remain_image_rect = self.shields_remain_image.get_rect()
+        self.shields_remain_image_rect.right = self.level_rect.right
+        self.shields_remain_image_rect.y = self.level_rect.bottom + 10
+
     def prep_ships(self):
         """This method shows how many ships left in use by user"""
         self.ships = Group()
@@ -75,6 +101,8 @@ class Scoreboard:
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
+        self.screen.blit(self.shield_life_remain_image, self.shield_life_remain_image_rect)
+        self.screen.blit(self.shields_remain_image, self.shields_remain_image_rect)
         self.ships.draw(self.screen)
 
     def save_high_score(self):
@@ -104,3 +132,5 @@ class Scoreboard:
         self.prep_high_score()
         self.prep_level()
         self.prep_ships()
+        self.prep_shield_life_remain()
+        self.prep_shields()
