@@ -259,11 +259,15 @@ class AlienInvasion:
             for alien_number in range(number_aliens_x):
                 self._create_alien(alien_number, row_number)
 
+        # Add a red aliens if game is active only and because of a game level
+        if self.stats.game_active:
+            self._add_red_aliens()
+
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
         randon_number = random.randint(-35, 10)
         alien_width, alien_height = alien.rect.size
-        if self.stats.game_active and self.stats.level >= 4:
+        if self.stats.game_active and self.stats.level > 14:
             alien_x = (alien_width + 2 * alien_width * alien_number) + randon_number
             alien.rect.x = alien_x
             alien.rect.y = ((alien_height + 2 * alien_height * row_number) + 50) + randon_number
@@ -367,6 +371,9 @@ class AlienInvasion:
                 alien.kill()
                 self.stats.shield_life_remain -= 1
                 self.sb.prep_shield_life_remain()
+                self.stats.score += self.settings.alien_points
+                self.sb.prep_score()
+                self.sb.check_high_score()
 
         # Minus the shield user remaining score if it's life points = 0
         if self.stats.shield_life_remain < 1:
@@ -440,6 +447,208 @@ class AlienInvasion:
                 # Have the same behavior if the aliens hit the ship
                 self._ship_hit()
                 break
+
+    def _add_red_aliens(self):
+        """This method (when it called) adds red aliens to the fleet"""
+        if self.stats.level == 1:  # no red aliens on 1 nd 2 levels
+            pass
+        elif self.stats.level == 2:  # red alien appears on level 3
+            self._create_red_alien(4)
+            # 1 red alien appeared
+        elif self.stats.level == 3:  # red aliens appear on level 4
+            self._create_red_alien(26)
+            self._create_red_alien(0)
+            # 2 red aliens appeared
+        elif self.stats.level == 4:  # red aliens appear on level 5
+            self._create_red_alien(7)
+            self._create_red_alien(4)
+            self._create_red_alien(11)
+            # 3 red aliens appeared
+        elif self.stats.level == 5:  # red aliens appear on level 6
+            self._create_red_alien(9)
+            self._create_red_alien(20)
+            self._create_red_alien(17)
+            self._create_red_alien(3)
+            # 4 red aliens appeared
+        elif self.stats.level == 6:  # red aliens appear on level 7
+            self._create_red_alien(21)
+            self._create_red_alien(5)
+            self._create_red_alien(6)
+            self._create_red_alien(14)
+            self._create_red_alien(19)
+            self._create_red_alien(20)
+            # 6 red aliens appeared
+        elif self.stats.level == 7:  # red aliens appear on level 8
+            self._create_red_alien(22)
+            self._create_red_alien(26)
+            self._create_red_alien(5)
+            self._create_red_alien(14)
+            self._create_red_alien(11)
+            self._create_red_alien(18)
+            self._create_red_alien(3)
+            self._create_red_alien(8)
+            self._create_red_alien(10)
+            # 9 red aliens appeared
+        elif self.stats.level == 8:  # red aliens appear on level 9
+            self._create_red_alien(9)
+            self._create_red_alien(0)
+            self._create_red_alien(23)
+            self._create_red_alien(21)
+            self._create_red_alien(5)
+            self._create_red_alien(14)
+            self._create_red_alien(19)
+            self._create_red_alien(17)
+            self._create_red_alien(18)
+            self._create_red_alien(11)
+            self._create_red_alien(10)
+            self._create_red_alien(8)
+            self._create_red_alien(2)
+            # 13 red aliens appeared
+        elif self.stats.level == 9:  # red aliens appear on level 10
+            self._create_red_alien(9)
+            self._create_red_alien(11)
+            self._create_red_alien(13)
+            self._create_red_alien(0)
+            self._create_red_alien(18)
+            self._create_red_alien(26)
+            self._create_red_alien(12)
+            self._create_red_alien(15)
+            self._create_red_alien(2)
+            self._create_red_alien(10)
+            self._create_red_alien(3)
+            self._create_red_alien(19)
+            self._create_red_alien(21)
+            self._create_red_alien(25)
+            self._create_red_alien(1)
+            # 15 red aliens appeared
+        elif self.stats.level == 10:  # red aliens appear on level 11
+            self._create_red_alien(26)
+            self._create_red_alien(1)
+            self._create_red_alien(11)
+            self._create_red_alien(22)
+            self._create_red_alien(14)
+            self._create_red_alien(16)
+            self._create_red_alien(25)
+            self._create_red_alien(0)
+            self._create_red_alien(12)
+            self._create_red_alien(20)
+            self._create_red_alien(23)
+            self._create_red_alien(19)
+            self._create_red_alien(9)
+            self._create_red_alien(17)
+            self._create_red_alien(5)
+            self._create_red_alien(24)
+            self._create_red_alien(18)
+            self._create_red_alien(7)
+            # 18 red aliens appeared
+        elif self.stats.level == 11:  # red aliens appear on level 12
+            self._create_red_alien(8)
+            self._create_red_alien(21)
+            self._create_red_alien(9)
+            self._create_red_alien(20)
+            self._create_red_alien(23)
+            self._create_red_alien(3)
+            self._create_red_alien(10)
+            self._create_red_alien(24)
+            self._create_red_alien(11)
+            self._create_red_alien(18)
+            self._create_red_alien(1)
+            self._create_red_alien(25)
+            self._create_red_alien(4)
+            self._create_red_alien(12)
+            self._create_red_alien(17)
+            self._create_red_alien(6)
+            self._create_red_alien(16)
+            self._create_red_alien(13)
+            self._create_red_alien(7)
+            self._create_red_alien(5)
+            # 20 red aliens appeared
+        elif self.stats.level == 12:  # red aliens appear on level 13
+            self._create_red_alien(9)
+            self._create_red_alien(21)
+            self._create_red_alien(8)
+            self._create_red_alien(22)
+            self._create_red_alien(6)
+            self._create_red_alien(19)
+            self._create_red_alien(20)
+            self._create_red_alien(11)
+            self._create_red_alien(5)
+            self._create_red_alien(18)
+            self._create_red_alien(24)
+            self._create_red_alien(17)
+            self._create_red_alien(4)
+            self._create_red_alien(12)
+            self._create_red_alien(3)
+            self._create_red_alien(16)
+            self._create_red_alien(23)
+            self._create_red_alien(13)
+            self._create_red_alien(14)
+            self._create_red_alien(1)
+            self._create_red_alien(25)
+            self._create_red_alien(26)
+            # 22 red aliens appeared
+        elif self.stats.level == 13:  # red aliens appear on level 14
+            self._create_red_alien(20)
+            self._create_red_alien(13)
+            self._create_red_alien(5)
+            self._create_red_alien(11)
+            self._create_red_alien(24)
+            self._create_red_alien(21)
+            self._create_red_alien(4)
+            self._create_red_alien(18)
+            self._create_red_alien(19)
+            self._create_red_alien(3)
+            self._create_red_alien(14)
+            self._create_red_alien(26)
+            self._create_red_alien(6)
+            self._create_red_alien(7)
+            self._create_red_alien(2)
+            self._create_red_alien(23)
+            self._create_red_alien(16)
+            self._create_red_alien(8)
+            self._create_red_alien(22)
+            self._create_red_alien(1)
+            self._create_red_alien(9)
+            self._create_red_alien(17)
+            self._create_red_alien(0)
+            self._create_red_alien(10)
+            # 24 red aliens appeared
+        elif self.stats.level == 14:  # red aliens appear on level 15
+            self._create_red_alien(14)
+            self._create_red_alien(24)
+            self._create_red_alien(7)
+            self._create_red_alien(13)
+            self._create_red_alien(1)
+            self._create_red_alien(20)
+            self._create_red_alien(5)
+            self._create_red_alien(19)
+            self._create_red_alien(0)
+            self._create_red_alien(12)
+            self._create_red_alien(21)
+            self._create_red_alien(18)
+            self._create_red_alien(2)
+            self._create_red_alien(8)
+            self._create_red_alien(23)
+            self._create_red_alien(26)
+            self._create_red_alien(15)
+            self._create_red_alien(3)
+            self._create_red_alien(11)
+            self._create_red_alien(17)
+            self._create_red_alien(4)
+            self._create_red_alien(22)
+            self._create_red_alien(6)
+            self._create_red_alien(9)
+            self._create_red_alien(16)
+            self._create_red_alien(10)
+            # 26 red aliens appeared
+
+    def _create_red_alien(self, alien_position_number):
+        """
+        Use this method if you would like to create a new one red alien in your fleet.
+        Repeat this method so much times as you want.
+        """
+        red_alien = self.aliens.sprites()[alien_position_number]
+        red_alien.image = pygame.image.load("images/red_alien.bmp")
 
 if __name__ == "__main__":
     # Creating the game object and run the game

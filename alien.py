@@ -10,7 +10,11 @@ class Alien(Sprite):
         self.settings = ai_game.settings
 
         # Load the alien image and get its rect attribute
-        self.image = pygame.image.load("images/alien.bmp")
+        if ai_game.stats.level < 15:
+            self.image = pygame.image.load("images/alien.bmp")
+        else:
+            self.image = pygame.image.load("images/red_alien.bmp")
+
         self.rect = self.image.get_rect()
 
         # Position settings for first alien
