@@ -426,8 +426,10 @@ class AlienInvasion:
             self.bullets.empty()
 
             # Create a new one fleet and center the ship
+            self.stats.level -= 1
             self._create_fleet()
             self.ship.center_ship()
+            self.stats.level += 1
 
             # Pause
             sleep(0.5)
