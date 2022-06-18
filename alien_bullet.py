@@ -13,21 +13,21 @@ class AlienBullet(Sprite):
         self.red_aliens = self.get_red_alien_from_the_group(self.aliens)
         self.alien_bullet_color = self.settings.alien_bullet_color
 
-        self.alien_bullet_rect = pygame.Rect(0, 0, self.settings.alien_bullet_width, self.settings.alien_bullet_height)
+        self.rect = pygame.Rect(0, 0, self.settings.alien_bullet_width, self.settings.alien_bullet_height)
 
-        self.alien_bullet_y = float(self.alien_bullet_rect.y)
+        self.y = float(self.rect.y)
 
     def update(self):
-        """This method update bullet vertical position"""
-        self.alien_bullet_y += self.settings.alien_bullet_speed
-        self.alien_bullet_rect.x = self.alien_bullet_y
+        """This method update alien bullet vertical position"""
+        self.y += self.settings.alien_bullet_speed
+        self.rect.y = self.y
 
     def draw_alien_bullet(self):
         """This method draw alien bullets with their parameters and color"""
         for red_alien in self.red_aliens.sprites():
-            self.alien_bullet_rect.midtop = red_alien.rect.midbottom
-            self.alien_bullet_rect.y -= 5
-            pygame.draw.rect(self.screen, self.alien_bullet_color, self.alien_bullet_rect)
+            self.rect.midtop = red_alien.rect.midbottom
+            self.rect.y -= 5
+            pygame.draw.rect(self.screen, self.alien_bullet_color, self.rect)
 
     @staticmethod
     def get_red_alien_from_the_group(aliens):

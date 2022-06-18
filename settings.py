@@ -48,7 +48,7 @@ class Settings:
         """This method cotrols the game dinamic settings only"""
         self.ship_speed = 1.5
         self.bullet_speed = 1.0
-        self.alien_bullet_speed = 100
+        self.alien_bullet_speed = 1.5
         self.alien_speed = 1.0
 
         # 1 - to right, -1 - to left
