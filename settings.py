@@ -20,6 +20,10 @@ class Settings:
         self.bullet_color = (60, 60, 60)
         self.bullets_allowed = 3
         self.bullet_speed = None
+        self.alien_bullet_speed = None
+        self.alien_bullet_color = (100, 149, 237)
+        self.alien_bullet_width = 3
+        self.alien_bullet_height = 125
 
         # Shield settings
         self.shield_limit = 1
@@ -44,6 +48,7 @@ class Settings:
         """This method cotrols the game dinamic settings only"""
         self.ship_speed = 1.5
         self.bullet_speed = 1.0
+        self.alien_bullet_speed = 100
         self.alien_speed = 1.0
 
         # 1 - to right, -1 - to left

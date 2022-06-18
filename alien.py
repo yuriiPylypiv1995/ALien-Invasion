@@ -8,12 +8,14 @@ class Alien(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
+        self.fire_bullet = False
 
         # Load the alien image and get its rect attribute
         if ai_game.stats.level < 15:
             self.image = pygame.image.load("images/alien.bmp")
         else:
             self.image = pygame.image.load("images/red_alien.bmp")
+            self.fire_bullet = True
 
         self.rect = self.image.get_rect()
 
