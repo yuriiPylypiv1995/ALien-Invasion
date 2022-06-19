@@ -21,9 +21,9 @@ class Settings:
         self.bullets_allowed = 3
         self.bullet_speed = None
         self.alien_bullet_speed = None
-        self.alien_bullet_color = (100, 149, 237)
+        self.alien_bullet_color = (188, 143, 143)
         self.alien_bullet_width = 3
-        self.alien_bullet_height = 125
+        self.alien_bullet_height = 130
 
         # Shield settings
         self.shield_limit = 1
@@ -48,7 +48,7 @@ class Settings:
         """This method cotrols the game dinamic settings only"""
         self.ship_speed = 1.5
         self.bullet_speed = 1.0
-        self.alien_bullet_speed = 1.5
+        self.alien_bullet_speed = 0.5
         self.alien_speed = 1.0
 
         # 1 - to right, -1 - to left
@@ -61,6 +61,7 @@ class Settings:
         """"Incresing speed settings"""
         self.ship_speed *= self.speed_up_scale
         self.bullet_speed *= self.speed_up_scale
+        self.alien_bullet_speed *= self.speed_up_scale
         self.alien_speed *= self.speed_up_scale
 
         self.alien_points = int(self.alien_points * self.score_scale)

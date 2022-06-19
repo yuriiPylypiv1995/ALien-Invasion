@@ -57,7 +57,7 @@ class AlienInvasion:
             if self.stats.game_active:
                 self.ship.update_position()
                 self.shield.move_power_shield()
-                if len(self.alien_bullets) < 1:
+                if len(self.alien_bullets) <= 1:
                     self._fire_alien_bullet()
                 self._update_bullets()
                 self._update_aliens()
@@ -177,6 +177,7 @@ class AlienInvasion:
             # Clear the aliens fleet and bullets
             self.aliens.empty()
             self.bullets.empty()
+            self.alien_bullets.empty()
 
             # Create a new fleet and put the ship to the screen center
             self._create_fleet()
@@ -198,6 +199,7 @@ class AlienInvasion:
             # Clear the aliens fleet and bullets
             self.aliens.empty()
             self.bullets.empty()
+            self.alien_bullets.empty()
 
             # Create a new fleet and put the ship to the screen center
             self._create_fleet()
@@ -302,6 +304,7 @@ class AlienInvasion:
         self.ship.blitme()
         for bullet in self.bullets.sprites():
             bullet.draw_bullet()
+
         self.aliens.draw(self.screen)
 
         # Draw the alien's bullets on the screen
@@ -355,6 +358,10 @@ class AlienInvasion:
             if bullet.rect.bottom <= 0:
                 self.bullets.remove(bullet)
 
+        for alien_bullet in self.alien_bullets.copy():
+            if alien_bullet.rect.top >= self.settings.screen_height:
+                self.alien_bullets.remove(alien_bullet)
+
         self._check_bullet_alien_collisions()
 
     def _check_bullet_alien_collisions(self):
@@ -374,10 +381,12 @@ class AlienInvasion:
                 self.sb.prep_high_score()
                 self.aliens.empty()
                 self.bullets.empty()
+                self.alien_bullets.empty()
                 self._create_fleet()
             else:
                 self.aliens.empty()
                 self.bullets.empty()
+                self.alien_bullets.empty()
                 self.new_level_up = True
                 self.shield.show_shield = False
                 self.start_new_level_button = Button(self, 'Next level', 170, 50, (255, 153, 51), (255, 255, 255), 48,
@@ -417,6 +426,7 @@ class AlienInvasion:
         # Delete remaining bullets and create a new fleet
         self.aliens.empty()
         self.bullets.empty()
+        self.alien_bullets.empty()
         self._create_fleet()
         self._fire_alien_bullet()
         self.settings.increase_speed()
