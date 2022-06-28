@@ -67,7 +67,7 @@ class Scoreboard:
 
     def prep_shield_life_remain(self):
         """Reform the shield life remain points to an image"""
-        shield_life_remain_str = str("Shield's life points: " + str(self.stats.shield_life_remain))
+        shield_life_remain_str = str("Shield's life points: " + str(round(self.stats.shield_life_remain)))
         self.shield_life_remain_image = self.font.render(shield_life_remain_str, True, self.text_color,
                                                          self.settings.bg_color)
 

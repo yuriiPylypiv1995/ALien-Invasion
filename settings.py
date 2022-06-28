@@ -27,7 +27,7 @@ class Settings:
 
         # Shield settings
         self.shield_limit = 1
-        self.shield_life_poitns = 150
+        self.shield_life_poitns = 300
         self.power_shield_width = 450
         self.power_shield_height = 295
 

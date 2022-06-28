@@ -47,7 +47,7 @@ class AlienInvasion:
         self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 490)
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 490)
         self.reset_high_score_button = Button(self, "Reset", 70, 20, (96, 96, 96), (255, 255, 255), 20,
-                                              (self.sb.high_score_rect.right + 10), self.sb.high_score_rect.y - 1)
+                                              (self.sb.high_score_rect.right + 30), self.sb.high_score_rect.y - 1)
         self.ok_button = None
         self.work_next_level_button_with_n = False
 
@@ -371,7 +371,11 @@ class AlienInvasion:
                 alien_bullet.kill()
             self._ship_hit()
 
+        # Check if any bullet from the user's ship touch aliens in the fleet
         self._check_bullet_alien_collisions()
+
+        # Removing an alien's bullets if it touched the ship's power shield
+        self._check_power_shield_alian_bullets_collisions()
 
     def _check_bullet_alien_collisions(self):
         # Removing shot aliens
@@ -452,6 +456,15 @@ class AlienInvasion:
             self.stats.shield_left = 0
             self.sb.prep_shields()
 
+    def _check_power_shield_alian_bullets_collisions(self):
+        """Removing those alien's bullets that touched the ship power shield and minusing shield life points"""
+        for alien_bullets in self.alien_bullets:
+            if pygame.sprite.spritecollideany(self.shield, self.alien_bullets) and self.shield.show_shield \
+                    and self.stats.shield_left >= 0 and self.stats.shield_life_remain > 0:
+                self.stats.shield_life_remain -= 0.01
+                self.sb.prep_shield_life_remain()
+                alien_bullets.kill()
+
     def _start_new_level(self):
         """Increase the level when bullet alien collisions"""
         # Delete remaining bullets and create a new fleet
@@ -524,7 +537,7 @@ class AlienInvasion:
         """This method (when it called) adds red aliens to the fleet because of the game level"""
         if self.stats.level == 1:  # no red aliens on 1 and 2 levels
             pass
-        elif self.stats.level == 2:   # red alien appears on level 3
+        elif self.stats.level == 2:  # red alien appears on level 3
             self._create_red_alien(4)
             # 1 red alien appeared
         elif self.stats.level == 3:  # red aliens appear on level 4
