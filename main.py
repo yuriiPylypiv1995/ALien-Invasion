@@ -374,8 +374,9 @@ class AlienInvasion:
         # Check if any bullet from the user's ship touch aliens in the fleet
         self._check_bullet_alien_collisions()
 
-        # Removing an alien's bullets if it touched the ship's power shield
+        # Removing an alien's bullets and bullets if it touched the ship's power shield
         self._check_power_shield_alian_bullets_collisions()
+        self._check_power_shield_bullets_collisions()
 
     def _check_bullet_alien_collisions(self):
         # Removing shot aliens
@@ -458,12 +459,21 @@ class AlienInvasion:
 
     def _check_power_shield_alian_bullets_collisions(self):
         """Removing those alien's bullets that touched the ship power shield and minusing shield life points"""
-        for alien_bullets in self.alien_bullets:
+        for alien_bullet in self.alien_bullets:
             if pygame.sprite.spritecollideany(self.shield, self.alien_bullets) and self.shield.show_shield \
                     and self.stats.shield_left >= 0 and self.stats.shield_life_remain > 0:
                 self.stats.shield_life_remain -= 0.01
                 self.sb.prep_shield_life_remain()
-                alien_bullets.kill()
+                alien_bullet.kill()
+
+    def _check_power_shield_bullets_collisions(self):
+        """Removing those bullets that touched the ship power shield and minusing shield life points because of that"""
+        for bullet in self.bullets:
+            if pygame.sprite.spritecollideany(self.shield, self.bullets) and self.shield.show_shield \
+                    and self.stats.shield_left >= 0 and self.stats.shield_life_remain > 0:
+                self.stats.shield_life_remain -= 0.1
+                self.sb.prep_shield_life_remain()
+                bullet.kill()
 
     def _start_new_level(self):
         """Increase the level when bullet alien collisions"""
