@@ -3,6 +3,7 @@ import sys
 import pygame
 from time import sleep
 import pygame.font
+import pygame.mixer
 
 from settings import Settings
 from ship import Ship
@@ -20,12 +21,22 @@ class AlienInvasion:
     def __init__(self):
         """Game initialization"""
         pygame.init()
+        pygame.mixer.init()
         self.settings = Settings()
         self.screen = pygame.display.set_mode((self.settings.screen_width, self.settings.screen_height))
         self.stats = GameStats(self)
         self.sb = Scoreboard(self)
 
         pygame.display.set_caption("Alien Invasion")
+
+        # Sounds of the game
+        self.play_click = pygame.mixer.Sound("sounds/play_button.wav")
+        self.level_choice_button_click = pygame.mixer.Sound("sounds/easy_normal_hard_level_buttons.wav")
+        self.reset_and_ok_click = pygame.mixer.Sound("sounds/reset_and_ok_buttons.wav")
+        self.power_shield_sound = pygame.mixer.Sound("sounds/power_shield.wav")
+        self.alien_bullets_sound = pygame.mixer.Sound("sounds/alien_bullets.wav")
+        self.alien_explosion = pygame.mixer.Sound("sounds/alien_explosion.wav")
+        self.bullets_sound = pygame.mixer.Sound("sounds/bullet_fire.wav")
 
         self.ship = Ship(self)
         self.shield = Shield(self)
@@ -47,7 +58,7 @@ class AlienInvasion:
         self.normal_level_button = Button(self, "Normal", 100, 40, (255, 215, 0), (255, 255, 255), 24, 580, 490)
         self.hard_level_button = Button(self, "Hard", 100, 40, (255, 0, 0), (255, 255, 255), 24, 730, 490)
         self.reset_high_score_button = Button(self, "Reset", 70, 20, (96, 96, 96), (255, 255, 255), 20,
-                                              (self.sb.high_score_rect.right + 30), self.sb.high_score_rect.y - 1)
+                                              (self.sb.high_score_rect.right + 10), self.sb.high_score_rect.y - 1)
         self.ok_button = None
         self.work_next_level_button_with_n = False
 
@@ -90,6 +101,7 @@ class AlienInvasion:
         """Reset the high score to zero if user clicked the 'reset' button"""
         button_clicked = self.reset_high_score_button.rect.collidepoint(mouse_pos)
         if button_clicked and int(self.sb.read_high_score()) > 0:
+            self.reset_and_ok_click.play()
             with open('high_score.txt', 'w') as file_object:
                 file_object.write(str(self.stats.high_score))
             self.sb.prep_high_score()
@@ -101,6 +113,7 @@ class AlienInvasion:
         try:
             button_ok_clicked = self.ok_button.rect.collidepoint(mouse_pos)
             if button_ok_clicked and self.stats.game_active is not True:
+                self.reset_and_ok_click.play()
                 self.message_image.fill(self.settings.bg_color)
                 self.ok_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 600, 475)
         except AttributeError:
@@ -111,6 +124,8 @@ class AlienInvasion:
         try:
             button_clicked = self.start_new_level_button.rect.collidepoint(mouse_pos)
             if button_clicked:
+                self.play_click.play()
+
                 # Icrease the game level
                 self._start_new_level()
                 self.start_new_level_button = Button(self, "", 0, 0, (96, 96, 96), (96, 96, 96), 0, 0, 0)
@@ -155,6 +170,7 @@ class AlienInvasion:
         elif event.key == pygame.K_s:
             self.shield.show_shield = True
         elif event.key == pygame.K_a:
+            self.power_shield_sound.stop()
             self.shield.show_shield = False
 
     def _check_keyup_events(self, event):
@@ -167,6 +183,9 @@ class AlienInvasion:
 
     def _start_game_with_play_button(self, button_clicked):
         if button_clicked and not self.stats.game_active:
+            # Click sound
+            self.play_click.play()
+
             # Set up the dynamic settings
             self.settings.ititialize_dynamic_settings()
 
@@ -189,6 +208,9 @@ class AlienInvasion:
 
     def _start_game_with_p_button(self):
         if not self.stats.game_active:
+            # Click sound
+            self.play_click.play()
+
             # Set up the dynamic settings
             self.settings.ititialize_dynamic_settings()
 
@@ -220,16 +242,19 @@ class AlienInvasion:
         button_normal_clicked = self.normal_level_button.rect.collidepoint(mouse_pos)
         button_hard_clicked = self.hard_level_button.rect.collidepoint(mouse_pos)
         if button_easy_clicked:
+            self.level_choice_button_click.play()
             self.settings.speed_up_scale += 0
             self.prep_level_buttons_messages("You have chosen an easy game level")
             self.ok_button_show = True
             self.ok_button = Button(self, "Ok", 70, 20, (119, 136, 153), (255, 255, 255), 20, 600, 575)
         elif button_normal_clicked:
+            self.level_choice_button_click.play()
             self.settings.speed_up_scale += 0.01
             self.prep_level_buttons_messages("You have chosen a normal game level")
             self.ok_button_show = True
             self.ok_button = Button(self, "Ok", 70, 20, (119, 136, 153), (255, 255, 255), 20, 600, 575)
         elif button_hard_clicked:
+            self.level_choice_button_click.play()
             self.settings.speed_up_scale += 0.02
             self.prep_level_buttons_messages("You have chosen a hard game level. Be careful!")
             self.ok_button_show = True
@@ -334,6 +359,7 @@ class AlienInvasion:
             self.start_new_level_button.draw_button()
         if self.shield.show_shield and self.stats.game_active and self.stats.shield_left >= 0 and \
                 self.stats.shield_life_remain > 0:
+            self.power_shield_sound.play()
             self.shield.blit_power_shield()
 
         # Show the last painted screen
@@ -342,12 +368,14 @@ class AlienInvasion:
     def _fire_bullet(self):
         # Adding new bullet to the group
         if len(self.bullets) < self.settings.bullets_allowed and self.stats.game_active:
+            self.bullets_sound.play()
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
     def _fire_alien_bullet(self):
         # Adding new alien bullet to the group
         if self.red_aliens and self.stats.game_active:
+            self.alien_bullets_sound.play()
             new_bullet = AlienBullet(self)
             self.alien_bullets.add(new_bullet)
 
@@ -383,6 +411,7 @@ class AlienInvasion:
         collisions = pygame.sprite.groupcollide(self.bullets, self.aliens, True, True)
 
         if collisions:
+            self.alien_explosion.play()
             for alien in collisions.values():
                 if self.stats.level > 14:
                     self.stats.score += self.settings.red_alien_points * len(alien)
@@ -396,6 +425,8 @@ class AlienInvasion:
 
         if not self.aliens:
             if self.stats.level > 29:
+                self.power_shield_sound.stop()
+                self.bullets_sound.stop()
                 self.stats.game_active = False
                 pygame.mouse.set_visible(True)
                 self.sb.prep_high_score()
@@ -404,6 +435,8 @@ class AlienInvasion:
                 self.alien_bullets.empty()
                 self._create_fleet()
             else:
+                self.power_shield_sound.stop()
+                self.bullets_sound.stop()
                 self.aliens.empty()
                 self.bullets.empty()
                 self.alien_bullets.empty()
@@ -421,6 +454,7 @@ class AlienInvasion:
             if pygame.sprite.spritecollideany(self.shield, self.aliens) and self.shield.show_shield and alien.rect.y \
                     >= self.shield.rect.y and alien.rect.x >= self.shield.rect.x and self.stats.shield_left >= 0 and \
                     self.stats.shield_life_remain > 0:
+                self.alien_explosion.play()
                 if self.stats.level > 14:
                     alien.kill()
                     self.stats.shield_life_remain -= 1
@@ -478,6 +512,7 @@ class AlienInvasion:
     def _start_new_level(self):
         """Increase the level when bullet alien collisions"""
         # Delete remaining bullets and create a new fleet
+        self.play_click.play()
         self.aliens.empty()
         self.bullets.empty()
         self.alien_bullets.empty()
@@ -506,6 +541,8 @@ class AlienInvasion:
     def _ship_hit(self):
         """This method regulates what we do when aliens hit the ship"""
         if self.stats.ships_left > 0:
+            self.power_shield_sound.stop()
+
             # Refuse ship_left from statistic and update the scoreboard
             self.stats.ships_left -= 1
             self.sb.prep_ships()
@@ -525,6 +562,7 @@ class AlienInvasion:
             # Pause
             sleep(0.5)
         else:
+            self.power_shield_sound.stop()
             self.stats.game_active = False
             pygame.mouse.set_visible(True)
             self.sb.prep_high_score()

@@ -23,7 +23,7 @@ class Settings:
         self.alien_bullet_speed = None
         self.alien_bullet_color = (188, 143, 143)
         self.alien_bullet_width = 3
-        self.alien_bullet_height = 75
+        self.alien_bullet_height = 100
 
         # Shield settings
         self.shield_limit = 1
