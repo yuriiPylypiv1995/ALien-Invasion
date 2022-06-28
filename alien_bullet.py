@@ -9,15 +9,12 @@ class AlienBullet(Sprite):
         super().__init__()
         self.screen = ai_game.screen
         self.settings = ai_game.settings
-        self.aliens = ai_game.aliens
-        self.red_aliens = self.get_red_aliens_from_the_group(self.aliens)
+        self.red_aliens = ai_game.red_aliens
         self.alien_bullet_color = self.settings.alien_bullet_color
 
         self.rect = pygame.Rect(0, 0, self.settings.alien_bullet_width, self.settings.alien_bullet_height)
 
-        for red_alien in self.red_aliens.sprites():
-            self.rect.midtop = red_alien.rect.midbottom
-            self.rect.y -= 5
+        self.set_alien_bullets_position()
 
         self.y = float(self.rect.y)
 
@@ -28,14 +25,11 @@ class AlienBullet(Sprite):
 
     def draw_alien_bullet(self):
         """This method draw alien bullets with their parameters and color"""
-        pygame.draw.rect(self.screen, self.alien_bullet_color, self.rect)
+        if self.red_aliens:
+            pygame.draw.rect(self.screen, self.alien_bullet_color, self.rect)
 
-    @staticmethod
-    def get_red_aliens_from_the_group(aliens):
-        """This method returns the red aliens only"""
-        red_aliens = pygame.sprite.Group()
-        for alien in aliens.sprites():
-            if alien.fire_bullet:
-                red_aliens.add(alien)
-
-        return red_aliens
+    def set_alien_bullets_position(self):
+        """This method regulates where alien bullets must appear on the game screen"""
+        for red_alien in self.red_aliens.sprites():
+            self.rect.midtop = red_alien.rect.midbottom
+            self.rect.y -= 5

@@ -29,9 +29,10 @@ class AlienInvasion:
 
         self.ship = Ship(self)
         self.shield = Shield(self)
+        self.aliens = pygame.sprite.Group()
+        self.red_aliens = pygame.sprite.Group()
         self.bullets = pygame.sprite.Group()
         self.alien_bullets = pygame.sprite.Group()
-        self.aliens = pygame.sprite.Group()
         self.font = pygame.font.SysFont(None, self.settings.font_size)
         self.font_message = None
         self.message_image = self.font.render(self.font_message, True, self.settings.font_color, self.settings.bg_color)
@@ -57,9 +58,9 @@ class AlienInvasion:
             if self.stats.game_active:
                 self.ship.update_position()
                 self.shield.move_power_shield()
-                if len(self.alien_bullets) <= 1:
-                    self._fire_alien_bullet()
                 self._update_bullets()
+                if len(self.alien_bullets) <= 0 and self.red_aliens:
+                    self._fire_alien_bullet()
                 self._update_aliens()
             self._update_screen()
 
@@ -128,24 +129,24 @@ class AlienInvasion:
             sys.exit()
         elif event.key == pygame.K_SPACE:
             self._fire_bullet()
-        elif event.key == pygame.K_F12:
-            # Open the game in the fullscreen mode
-            self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-            self.settings.screen_width = self.screen.get_rect().width
-            self.settings.screen_height = self.screen.get_rect().height
-            self.ship.rect.y += 100
-            self.ship.screen_rect.right += 168
-            self._create_fleet()
-        elif event.key == pygame.K_ESCAPE:
-            # Exit from the fullscreen mode
-            self.screen = pygame.display.set_mode((1200, 670))
-            if self.ship.x < 0:
-                self.ship.x = 0
-            elif self.ship.x > 1200:
-                self.ship.x -= 168
-            self.ship.rect.y -= 100
-            self.ship.screen_rect.right -= 168
-            self._create_fleet()
+        # elif event.key == pygame.K_F12:
+        #     # Open the game in the fullscreen mode
+        #     self.screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        #     self.settings.screen_width = self.screen.get_rect().width
+        #     self.settings.screen_height = self.screen.get_rect().height
+        #     self.ship.rect.y += 100
+        #     self.ship.screen_rect.right += 168
+        #     self._create_fleet()
+        # elif event.key == pygame.K_ESCAPE:
+        #     # Exit from the fullscreen mode
+        #     self.screen = pygame.display.set_mode((1200, 670))
+        #     if self.ship.x < 0:
+        #         self.ship.x = 0
+        #     elif self.ship.x > 1200:
+        #         self.ship.x -= 168
+        #     self.ship.rect.y -= 100
+        #     self.ship.screen_rect.right -= 168
+        #     self._create_fleet()
         elif event.key == pygame.K_p:
             self._start_game_with_p_button()
         elif event.key == pygame.K_n:
@@ -269,15 +270,16 @@ class AlienInvasion:
         # Add a red aliens if game is active only
         if self.stats.game_active:
             self._add_red_aliens()
+            self.get_red_aliens_from_the_group()
 
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
-        randon_number = random.randint(-35, 10)
+        random_number = random.randint(-35, 10)
         alien_width, alien_height = alien.rect.size
         if self.stats.game_active and self.stats.level > 14:
-            alien_x = (alien_width + 2 * alien_width * alien_number) + randon_number
+            alien_x = (alien_width + 2 * alien_width * alien_number) + random_number
             alien.rect.x = alien_x
-            alien.rect.y = ((alien_height + 2 * alien_height * row_number) + 50) + randon_number
+            alien.rect.y = ((alien_height + 2 * alien_height * row_number) + 50) + random_number
             self.aliens.add(alien)
         else:
             alien_x = alien_width + 2 * alien_width * alien_number
@@ -339,14 +341,15 @@ class AlienInvasion:
 
     def _fire_bullet(self):
         # Adding new bullet to the group
-        if len(self.bullets) < self.settings.bullets_allowed:
+        if len(self.bullets) < self.settings.bullets_allowed and self.stats.game_active:
             new_bullet = Bullet(self)
             self.bullets.add(new_bullet)
 
     def _fire_alien_bullet(self):
         # Adding new alien bullet to the group
-        new_bullet = AlienBullet(self)
-        self.alien_bullets.add(new_bullet)
+        if self.red_aliens and self.stats.game_active:
+            new_bullet = AlienBullet(self)
+            self.alien_bullets.add(new_bullet)
 
     def _update_bullets(self):
         """The method for bullets updating"""
@@ -362,6 +365,12 @@ class AlienInvasion:
             if alien_bullet.rect.top >= self.settings.screen_height:
                 self.alien_bullets.remove(alien_bullet)
 
+        # Check if any alien bullet touched the ship
+        if pygame.sprite.spritecollideany(self.ship, self.alien_bullets):
+            for alien_bullet in self.alien_bullets.sprites():
+                alien_bullet.kill()
+            self._ship_hit()
+
         self._check_bullet_alien_collisions()
 
     def _check_bullet_alien_collisions(self):
@@ -370,7 +379,13 @@ class AlienInvasion:
 
         if collisions:
             for alien in collisions.values():
-                self.stats.score += self.settings.alien_points * len(alien)
+                if self.stats.level > 14:
+                    self.stats.score += self.settings.red_alien_points * len(alien)
+                else:
+                    if alien[0].redness:
+                        self.stats.score += self.settings.red_alien_points * len(alien)
+                    else:
+                        self.stats.score += self.settings.alien_points * len(alien)
             self.sb.prep_score()
             self.sb.check_high_score()
 
@@ -396,17 +411,33 @@ class AlienInvasion:
                 self.ship.center_ship()
 
     def _check_power_shield_alians_collisions(self):
-        """Removing those aliens that touched the ship power shield and minus shield life points"""
+        """Removing those aliens that touched the ship power shield and minusing shield life points"""
         for alien in self.aliens.sprites():
             if pygame.sprite.spritecollideany(self.shield, self.aliens) and self.shield.show_shield and alien.rect.y \
                     >= self.shield.rect.y and alien.rect.x >= self.shield.rect.x and self.stats.shield_left >= 0 and \
                     self.stats.shield_life_remain > 0:
-                alien.kill()
-                self.stats.shield_life_remain -= 1
-                self.sb.prep_shield_life_remain()
-                self.stats.score += self.settings.alien_points
-                self.sb.prep_score()
-                self.sb.check_high_score()
+                if self.stats.level > 14:
+                    alien.kill()
+                    self.stats.shield_life_remain -= 1
+                    self.sb.prep_shield_life_remain()
+                    self.stats.score += self.settings.red_alien_points
+                    self.sb.prep_score()
+                    self.sb.check_high_score()
+                else:
+                    if alien.redness:
+                        alien.kill()
+                        self.stats.shield_life_remain -= 1
+                        self.sb.prep_shield_life_remain()
+                        self.stats.score += self.settings.red_alien_points
+                        self.sb.prep_score()
+                        self.sb.check_high_score()
+                    else:
+                        alien.kill()
+                        self.stats.shield_life_remain -= 1
+                        self.sb.prep_shield_life_remain()
+                        self.stats.score += self.settings.alien_points
+                        self.sb.prep_score()
+                        self.sb.check_high_score()
 
         # Minus the shield user remaining score if it's life points = 0
         if self.stats.shield_life_remain < 1:
@@ -428,7 +459,6 @@ class AlienInvasion:
         self.bullets.empty()
         self.alien_bullets.empty()
         self._create_fleet()
-        self._fire_alien_bullet()
         self.settings.increase_speed()
         self.stats.level += 1
         self.sb.prep_level()
@@ -459,10 +489,11 @@ class AlienInvasion:
 
             # Delete the remaining aliens and bullets
             self.aliens.empty()
+            self.red_aliens.empty()
             self.bullets.empty()
             self.alien_bullets.empty()
 
-            # Create a new one fleet, center the ship and not change the game level
+            # Create a new one fleet, center the ship and don't change the game level
             self.stats.level -= 1
             self._create_fleet()
             self.ship.center_ship()
@@ -475,6 +506,7 @@ class AlienInvasion:
             pygame.mouse.set_visible(True)
             self.sb.prep_high_score()
             self.aliens.empty()
+            self.red_aliens.empty()
             self.bullets.empty()
             self.alien_bullets.empty()
             self._create_fleet()
@@ -489,8 +521,8 @@ class AlienInvasion:
                 break
 
     def _add_red_aliens(self):
-        """This method (when it called) adds red aliens to the fleet"""
-        if self.stats.level == 1:  # no red aliens on 1 nd 2 levels
+        """This method (when it called) adds red aliens to the fleet because of the game level"""
+        if self.stats.level == 1:  # no red aliens on 1 and 2 levels
             pass
         elif self.stats.level == 2:   # red alien appears on level 3
             self._create_red_alien(4)
@@ -689,7 +721,13 @@ class AlienInvasion:
         """
         red_alien = self.aliens.sprites()[alien_position_number]
         red_alien.image = pygame.image.load("images/red_alien.bmp")
-        red_alien.fire_bullet = True
+        red_alien.redness = True
+
+    def get_red_aliens_from_the_group(self):
+        """This method returns the red aliens only"""
+        for alien in self.aliens.sprites():
+            if alien.redness:
+                self.red_aliens.add(alien)
 
 if __name__ == "__main__":
     # Creating the game object and run the game

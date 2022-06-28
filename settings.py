@@ -12,7 +12,7 @@ class Settings:
 
         # The ship settings
         self.ship_speed = None
-        self.ship_limit = 3
+        self.ship_limit = 5
 
         # Bullets settings
         self.bullet_width = 3
@@ -23,7 +23,7 @@ class Settings:
         self.alien_bullet_speed = None
         self.alien_bullet_color = (188, 143, 143)
         self.alien_bullet_width = 3
-        self.alien_bullet_height = 130
+        self.alien_bullet_height = 75
 
         # Shield settings
         self.shield_limit = 1
@@ -36,6 +36,7 @@ class Settings:
         self.alien_speed = None
         self.fleet_drop_speed = 10
         self.alien_points = None
+        self.red_alien_points = None
 
         # The game speed up
         self.speed_up_scale = 1.1
@@ -48,7 +49,7 @@ class Settings:
         """This method cotrols the game dinamic settings only"""
         self.ship_speed = 1.5
         self.bullet_speed = 1.0
-        self.alien_bullet_speed = 0.5
+        self.alien_bullet_speed = 0.3
         self.alien_speed = 1.0
 
         # 1 - to right, -1 - to left
@@ -56,6 +57,7 @@ class Settings:
 
         # Points for any one alien
         self.alien_points = 50
+        self.red_alien_points = 70
 
     def increase_speed(self):
         """"Incresing speed settings"""
@@ -65,4 +67,6 @@ class Settings:
         self.alien_speed *= self.speed_up_scale
 
         self.alien_points = int(self.alien_points * self.score_scale)
+        self.red_alien_points = int(self.red_alien_points * self.score_scale)
+
 
