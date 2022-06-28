@@ -64,6 +64,10 @@ class AlienInvasion:
 
     def run_game(self):
         """The main cycle of the game"""
+        pygame.mixer.music.load("sounds/background.wav")
+        pygame.mixer.music.play(loops=-1)
+        pygame.mixer.music.set_volume(0.7)
+
         while True:
             self._check_events()
             if self.stats.game_active:
