@@ -5,7 +5,7 @@ class Ship(Sprite):
     """The spaceship params and working"""
 
     def __init__(self, ai_game):
-        """The spaceship initialization and start position"""
+        """The spaceship initialization and the start position"""
         super().__init__()
         self.screen = ai_game.screen
         self.screen_rect = self.screen.get_rect()
@@ -18,6 +18,7 @@ class Ship(Sprite):
         # Setting of the spaceship start position (on the botton centre of the screen)
         self.rect.midbottom = self.screen_rect.midbottom
 
+        # Storing the x horizontal coordinate in order to regulate it with floats
         self.x = float(self.rect.x)
 
         # The moving right indicator
@@ -26,6 +27,7 @@ class Ship(Sprite):
         self.moving_left = False
 
     def update_position(self):
+        """This method is responsible for the spaceship moving"""
         if self.moving_right and self.rect.right < self.screen_rect.right:
             self.x += self.settings.ship_speed
         if self.moving_left and self.rect.left > 0:
@@ -35,10 +37,10 @@ class Ship(Sprite):
         self.rect.x = self.x
 
     def blitme(self):
-        """Paiting of the spaceship on its start position"""
+        """Paiting the spaceship on its start position"""
         self.screen.blit(self.image, self.rect)
 
     def center_ship(self):
-        """Center the ship on midbottom of the screen"""
+        """Centering the ship on the midbottom of the screen"""
         self.rect.midbottom = self.screen_rect.midbottom
         self.x = float(self.rect.x)
