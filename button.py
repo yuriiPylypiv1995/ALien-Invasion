@@ -26,12 +26,12 @@ class Button:
         self.prep_msg(msg)
 
     def prep_msg(self, msg):
-        """Reform the text to image and position him to center of the button"""
+        """Reform the text to an image and position it to the center of the button"""
         self.msg_image = self.font.render(msg, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.rect.center
 
     def draw_button(self):
-        """This is method for drawing the button with text on the game screen"""
+        """This is the method for drawing the button with text on the game screen"""
         self.screen.fill(self.button_color, self.rect)
         self.screen.blit(self.msg_image, self.msg_image_rect)

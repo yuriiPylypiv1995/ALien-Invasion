@@ -10,13 +10,8 @@ class Alien(Sprite):
         self.settings = ai_game.settings
         self.redness = False
 
-        # Load the alien image and get its rect attribute
-        if ai_game.stats.level < 15:
-            self.image = pygame.image.load("images/alien.bmp")
-        else:
-            self.image = pygame.image.load("images/red_alien.bmp")
-            self.redness = True
-
+        # The aliens image controls here
+        self.get_aliens_images(ai_game)
         self.rect = self.image.get_rect()
 
         # Position settings for first alien
@@ -31,7 +26,15 @@ class Alien(Sprite):
         self.rect.x += (self.settings.alien_speed * self.settings.fleet_direction)
 
     def check_edges(self):
-        """Return True if alien is on near screen edge"""
+        """Return True if any alien is on near screen edge"""
         screen_rect = self.screen.get_rect()
         if self.rect.right >= screen_rect.right or self.rect.left <= 0:
             return True
+
+    def get_aliens_images(self, ai_game):
+        """Load the alien image and get its rect attribute"""
+        if ai_game.stats.level < 15:
+            self.image = pygame.image.load("images/alien.bmp")
+        else:
+            self.image = pygame.image.load("images/red_alien.bmp")
+            self.redness = True

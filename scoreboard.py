@@ -14,7 +14,7 @@ class Scoreboard:
         self.settings = ai_game.settings
         self.stats = ai_game.stats
 
-        # There are a font's settings
+        # These are a font's settings
         self.text_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 30)
 
@@ -30,7 +30,7 @@ class Scoreboard:
         self.shields_remain_image = None
         self.shields_remain_image_rect = None
 
-        # Making an image for start score's showing
+        # Making an image for start showing
         self.prep_images()
 
     def prep_score(self):
@@ -39,7 +39,7 @@ class Scoreboard:
         score_str = "Score: {:,}".format(rounded_score)
         self.score_image = self.font.render(score_str, True, self.text_color, self.settings.bg_color)
 
-        # Show the score image in the top right corner of the screen
+        # Show the score image n the top right corner of the screen
         self.score_rect = self.score_image.get_rect()
         self.score_rect.right = self.screen_rect.right - 20
         self.score_rect.top = 20
@@ -97,7 +97,7 @@ class Scoreboard:
             self.ships.add(ship)
 
     def show_score(self):
-        """This method draws the score, level and ships images on the screen"""
+        """This method draws the score, level, ships and shield images on the screen"""
         self.screen.blit(self.score_image, self.score_rect)
         self.screen.blit(self.high_score_image, self.high_score_rect)
         self.screen.blit(self.level_image, self.level_rect)
@@ -117,7 +117,8 @@ class Scoreboard:
         """Reading the high score from the file"""
         with open('high_score.txt', 'r') as file_object:
             high_score_saved = file_object.read()
-            return high_score_saved
+
+        return high_score_saved
 
     def check_high_score(self):
         """Check if the new high score is reached"""

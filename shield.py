@@ -1,7 +1,7 @@
 import pygame
 
 class Shield:
-    """This is a clas for ship shield creation"""
+    """This is a class for ship shield creation"""
 
     def __init__(self, ai_game):
         """The shield attibutes initialization"""

@@ -1,5 +1,5 @@
 class Settings:
-    """This is a class for saving all of game's settings"""
+    """This is a class for saving all game's settings"""
 
     def __init__(self):
         """Game settings initialization"""
@@ -10,7 +10,7 @@ class Settings:
         self.font_color = (96, 96, 96)
         self.font_size = 27
 
-        # The ship settings
+        # Ship settings
         self.ship_speed = None
         self.ship_limit = 5
 
@@ -46,7 +46,7 @@ class Settings:
         self.score_scale = 1.5
 
     def ititialize_dynamic_settings(self):
-        """This method cotrols the game dinamic settings only"""
+        """This method cotrols the game dynamic settings only"""
         self.ship_speed = 1.5
         self.bullet_speed = 1.0
         self.alien_bullet_speed = 0.3
@@ -66,6 +66,7 @@ class Settings:
         self.alien_bullet_speed *= self.speed_up_scale
         self.alien_speed *= self.speed_up_scale
 
+        # Increasing the amount of points by killing each one red or green alien
         self.alien_points = int(self.alien_points * self.score_scale)
         self.red_alien_points = int(self.red_alien_points * self.score_scale)
 
